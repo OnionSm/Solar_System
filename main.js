@@ -1,62 +1,76 @@
 import * as THREE from 'three';
 import GetCamera from './assets/scripts/camera/camera,js';
-import GetSun from './assets/scripts/planets/sun';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'; // Đảm bảo sử dụng đúng đường dẫn
+import GetSun from './assets/scripts/planets/sun.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 function init() {
+    // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000); // Chỉnh màu nền
+    scene.background = new THREE.Color(0x000000);
 
-    // Tạo camera với các tham số dễ thay đổi
-    const camera = GetCamera(0, 1, 10); // Bạn có thể thay đổi tham số này để tùy chỉnh camera
+    // Camera
+    const camera = GetCamera(0, 1, 10);
 
-    // Tạo renderer
-    const renderer = new THREE.WebGLRenderer();
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Tạo đối tượng mặt trời
-    var sun = GetSun();
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+
+    // Sun (Object)
+    const sun = GetSun();
     scene.add(sun);
 
-    // Thêm ánh sáng
+    // Light
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.z = 2;
+    light.position.set(0, 0, 2);
     scene.add(light);
 
-    // Tạo lưới GridHelper
-    const gridHelper = new THREE.GridHelper(10000, 10000); // 10x10 ô vuông
-    gridHelper.rotation.x = Math.PI / 2; // Xoay từ mặt XZ sang mặt XY
+    // Grid
+    const gridHelper = new THREE.GridHelper(10000, 10000);
+    gridHelper.rotation.x = Math.PI / 2;
     scene.add(gridHelper);
 
-    // Thêm OrbitControls để dễ dàng di chuyển camera
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // Thêm độ mượt cho việc di chuyển
-    controls.dampingFactor = 0.25; // Độ mượt của chuyển động
-    controls.screenSpacePanning = false; // Không cho phép pan trong không gian màn hình
+    // Post-processing: Bloom
+    const composer = new EffectComposer(renderer);
+    const renderScene = new RenderPass(scene, camera);
+    const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        2, // strength
+        1, // radius
+        0 // threshold
+    );
 
-    // Cập nhật ánh sáng và camera khi có sự thay đổi
-    controls.addEventListener('change', () => {
-        camera.updateMatrixWorld();
+    composer.addPass(renderScene);
+    composer.addPass(bloomPass);
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+        composer.setSize(width, height);
     });
 
+    // Animation loop
+    function animate() {
+        sun.rotation.z += 0.01;
+        sun.rotation.y += 0.01;
 
-    // Render và update
-    renderer.setAnimationLoop(() => animate([sun], renderer, scene, camera, controls));
-}
+        controls.update();
+        composer.render(); // Dùng composer để áp dụng hiệu ứng bloom
+    }
 
-function animate(objects, renderer, scene, camera, controls) {
-    // Xoay các đối tượng trong scene
-    objects.forEach(object => {
-        object.rotation.x += 0.01;
-        object.rotation.y += 0.01;
-    });
-
-    // Cập nhật controls (để di chuyển camera)
-    controls.update();
-
-    // Render lại scene
-    renderer.render(scene, camera);
+    renderer.setAnimationLoop(animate);
 }
 
 init();
