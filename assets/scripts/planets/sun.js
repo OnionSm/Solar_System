@@ -1,6 +1,6 @@
 import * as THREE from "three"
 
-const GetSun = (radius = 1, widthSegments = 64, heightSegments = 32) => 
+const GetSun = (radius = 5, widthSegments = 64, heightSegments = 32) => 
 {
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments); 
 

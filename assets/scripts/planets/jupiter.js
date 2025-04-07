@@ -1,12 +1,12 @@
 import * as THREE from "three"
 
-const GetMercury = (radius = 1, widthSegments = 64, heightSegments = 32) => 
+const GetJupiter = (radius = 1, widthSegments = 64, heightSegments = 32) => 
 {
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments); 
 
     // Tải texture bằng TextureLoader
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('./assets/sprites/2k_mercury.jpg');  // Đường dẫn đến hình ảnh texture
+    const texture = textureLoader.load('./assets/sprites/2k_jupiter.jpg');  // Đường dẫn đến hình ảnh texture
     const material = new THREE.MeshStandardMaterial({ map: texture }); // Áp dụng texture vào vật liệu
     
     //const material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } ); 
@@ -15,4 +15,4 @@ const GetMercury = (radius = 1, widthSegments = 64, heightSegments = 32) =>
     return sphere;
 }
 
-export default GetMercury;
+export default GetJupiter;
