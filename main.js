@@ -3,7 +3,7 @@ import GetCamera from './assets/scripts/camera/camera,js';
 import GetSun from './assets/scripts/planets/sun.js';
 import GetMercury from './assets/scripts/planets/mercury.js';
 import GetVenus from './assets/scripts/planets/venus.js';
-import GetEarth from './assets/scripts/planets/earth.js';
+// import GetEarth from './assets/scripts/planets/earth.js';
 import GetMars from './assets/scripts/planets/mars.js';
 import GetJupiter from './assets/scripts/planets/jupiter.js';
 import GetSaturn from './assets/scripts/planets/saturn.js';
@@ -13,7 +13,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-
+import GetEarthMaterial from './assets/scripts/textures/earthTexture.js';
+import GetEarthMoon from './assets/scripts/moons/getEarthMoon.js';
+import CreatePlanet from './assets/scripts/planets/createPlanet.js';
 function LoadComponent() {
     // Scene
     const scene = new THREE.Scene();
@@ -35,8 +37,16 @@ function LoadComponent() {
 
 	}
 
+    // SETTING
+    const settings = {
+        accelerationOrbit: 1,
+        acceleration: 1,
+        sunIntensity: 1.9
+    };
+
+      
     // Camera
-    const camera = GetCamera(0, 1, 50);
+    const camera = GetCamera(0, 1, 100);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -49,29 +59,36 @@ function LoadComponent() {
     controls.dampingFactor = 0.25;
 
     // OBJECTS 
-    const sun = GetSun();
-    const mercury = GetMercury();
-    const venus = GetVenus();
-    const earth = GetEarth();
-    const mars = GetMars();
-    const jupiter = GetJupiter();
-    const saturn = GetSaturn();
-    const uranus = GetUranus();
-    const neptune = GetNeptune();
+    const sun = GetSun(18, 64, 32);
+    const mercury = GetMercury(2, 64, 32);
+    const venus = GetVenus(5, 64, 32);
 
-    mercury.position.x = 20;
-    venus.position.x = 40;
-    earth.position.x = 60;
-    mars.position.x = 80;
-    jupiter.position.x = 100;
-    saturn.position.x = 120;
-    uranus.position.x = 140;
-    neptune.position.x = 160;
+
+    const earth_material = GetEarthMaterial(sun.position);
+    const earth_moon = GetEarthMoon(settings.acceleration);
+    const earth = CreatePlanet('Earth', 6.4, 90, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene);
+
+
+    //const earth = GetEarth(5.22, 64, 32);
+    const mars = GetMars(2.78, 64, 32);
+    const jupiter = GetJupiter(14.325, 64, 32);
+    const saturn = GetSaturn(11.93, 64, 32);
+    const uranus = GetUranus(6.59, 64, 32);
+    const neptune = GetNeptune(5.45, 64, 32);
+
+    mercury.position.x = 30;
+    venus.position.x = 60;
+    //earth.position.x = 90;
+    mars.position.x = 120;
+    jupiter.position.x = 200;
+    saturn.position.x = 260;
+    uranus.position.x = 310;
+    neptune.position.x = 330;
 
     scene.add(sun);
     scene.add(mercury);
     scene.add(venus);
-    scene.add(earth);
+    //scene.add(earth);
     scene.add(mars);
     scene.add(jupiter);
     scene.add(saturn);
@@ -80,16 +97,16 @@ function LoadComponent() {
 
 
     // ORBITS
-    const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.DoubleSide });
 
-    const mercury_orbit_geometry = new THREE.RingGeometry(20, 20.1, 64);
-    const venus_orbit_geometry = new THREE.RingGeometry(40, 40.1, 64);
-    const earth_orbit_geometry = new THREE.RingGeometry(60, 60.1, 64);
-    const mars_orbit_geometry = new THREE.RingGeometry(80, 80.1, 64);
-    const jupiter_orbit_geometry = new THREE.RingGeometry(100, 100.1, 64);
-    const saturn_orbit_geometry = new THREE.RingGeometry(120, 120.1, 64);
-    const uranus_orbit_geometry = new THREE.RingGeometry(140, 140.1, 64);
-    const neptune_orbit_geometry = new THREE.RingGeometry(160, 160.1, 64);
+    const mercury_orbit_geometry = new THREE.RingGeometry(30, 30.2, 256);
+    const venus_orbit_geometry = new THREE.RingGeometry(60, 60.2, 256);
+    const earth_orbit_geometry = new THREE.RingGeometry(90, 90.2, 256);
+    const mars_orbit_geometry = new THREE.RingGeometry(120, 120.2, 256);
+    const jupiter_orbit_geometry = new THREE.RingGeometry(200, 200.3, 256);
+    const saturn_orbit_geometry = new THREE.RingGeometry(260, 260.3, 256);
+    const uranus_orbit_geometry = new THREE.RingGeometry(310, 310.3, 256);
+    const neptune_orbit_geometry = new THREE.RingGeometry(330, 330.3, 256);
 
 
     const mercury_orbit = new THREE.Mesh(mercury_orbit_geometry, orbitMaterial);
@@ -121,7 +138,7 @@ function LoadComponent() {
 
 
     // Light
-    const light = new THREE.PointLight(0xffffff, 500);
+    const light = new THREE.PointLight(0xffffff, 10000);
     light.position.set(0, 0, 0);
     scene.add(light);
 
@@ -135,14 +152,14 @@ function LoadComponent() {
     gridHelper.material.opacity = 0.1;        // Độ mờ (opacity)
     gridHelper.material.transparent = true;   // Bật tính năng trong suốt
 
-    scene.add(gridHelper);
+    // scene.add(gridHelper);
 
     // Post-processing: Bloom
     const composer = new EffectComposer(renderer);
     const renderScene = new RenderPass(scene, camera);
     const bloomPass = new UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        1.5, // strength
+        0.3, // strength
         1, // radius
         0 // threshold
     );
@@ -167,7 +184,7 @@ function LoadComponent() {
         sun.rotation.y += 0.001;
         mercury.rotation.y += 0.01;
         venus.rotation.y += 0.01;
-        earth.rotation.y += 0.01;
+        //earth.rotation.y += 0.01;
         mars.rotation.y += 0.01;
         jupiter.rotation.y += 0.01;
         saturn.rotation.y += 0.01;

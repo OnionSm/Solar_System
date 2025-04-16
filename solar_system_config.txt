@@ -1,0 +1,79 @@
+REAL SOLAR SYSTEM
+
+Distance to Sun
+
+Mercury:    57.9 million kms 
+Venus:      108.2 million kms
+Earth:      149.6 million kms
+Mars:       227.9 million kms
+Jupiter:    778.3 million kms
+Saturn:     1430 million kms
+Uranus:     2870 million kms
+Neptune:    4500 million kms
+
+Radius
+Thiên thể	        Bán kính (km)	So với Trái Đất (lần)
+☀ Mặt Trời	        696,340 km	    ~109 lần Trái Đất
+☿ Sao Thủy	        2,439.7 km	    ~0.38
+♀ Sao Kim	        6,051.8 km	    ~0.95
+🌍 Trái Đất	        6,371.0 km	    1.00 (chuẩn)
+♂ Sao Hỏa	        3,389.5 km	    ~0.53
+♃ Sao Mộc	        69,911 km	    ~10.97
+♄ Sao Thổ	        58,232 km	    ~9.14
+♅ Sao Thiên Vương	25,362 km	    ~3.98
+♆ Sao Hải Vương	    24,622 km	    ~3.87
+
+Đặt giá trị bán kính sao thủy là bán kính chuẩn
+=> 243.97km = 1 pixel
+
+Threejs Radius Planet
+Thiên thể	        Bán kính (pixel)	
+☀ Mặt Trời	        2850   
+☿ Sao Thủy	        10	    
+♀ Sao Kim	        25
+🌍 Trái Đất	        26.1
+♂ Sao Hỏa	        13.9    
+♃ Sao Mộc	        286.5
+♄ Sao Thổ	        238.6	    
+♅ Sao Thiên Vương	139	    
+♆ Sao Hải Vương	    109    
+
+Distance to Sun
+Thiên thể	        Distance (pixel)	
+
+☿ Sao Thủy       	237324  
+♀ Sao Kim	        443497	    
+🌍 Trái Đất	        613190
+♂ Sao Hỏa	        934131
+♃ Sao Mộc	        3190146    
+♄ Sao Thổ           5861376
+♅ Sao Thiên Vương	11763741        	    
+♆ Sao Hải Vương		18444890   
+	      
+
+
+
+SOLAR SYSTEM 2
+Threejs Radius Planet
+Thiên thể	        Bán kính (pixel)	
+☀ Mặt Trời	        2850   /100     => 28.5
+☿ Sao Thủy	        10	   /5       => 2 
+♀ Sao Kim	        25     /5       => 5
+🌍 Trái Đất	        26.1   /5       => 5.22
+♂ Sao Hỏa	        13.9   /5       => 2.78 
+♃ Sao Mộc	        286.5  /20      => 14.325
+♄ Sao Thổ	        238.6  /20      => 11.93  
+♅ Sao Thiên Vương	139	   /20      => 6.59
+♆ Sao Hải Vương	    109    /20     => 1.09
+
+
+Thiên thể	        Distance (pixel)	
+
+☿ Sao Thủy       	237324   /5000  => 47.4648
+♀ Sao Kim	        443497	 /5000  => 88.6994  
+🌍 Trái Đất	        613190   /5000  => 122.638
+♂ Sao Hỏa	        934131   /6000  => 186.8262
+♃ Sao Mộc	        3190146  /120000  => 265.8455
+♄ Sao Thổ           5861376  /150000  => 265.8455 
+♅ Sao Thiên Vương	11763741 /25000  => 470.55	    
+♆ Sao Hải Vương		18444890 /20000  => 614.83
