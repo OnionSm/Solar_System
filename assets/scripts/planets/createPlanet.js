@@ -87,23 +87,28 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
       moons.forEach(moon => {
         let moonMaterial;
         
-        if(moon.bump){
+        if(moon.bump)
+        {
           moonMaterial = new THREE.MeshStandardMaterial({
             map: loadTexture.load(moon.texture),
             bumpMap: loadTexture.load(moon.bump),
             bumpScale: 0.5
           });
-        } else{
+        } 
+        else
+        {
           moonMaterial = new THREE.MeshStandardMaterial({
             map: loadTexture.load(moon.texture)
           });
         }
+        console.log(moon);
         const moonGeometry = new THREE.SphereGeometry(moon.size, 32, 20);
         const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
         const moonOrbitDistance = size * 1.5;
-        moonMesh.position.set(moonOrbitDistance, 0, 0);
+        moonMesh.position.set(moonOrbitDistance + position.x, 0, 0);
         planetSystem.add(moonMesh);
         moon.mesh = moonMesh;
+        //console.log(moonMesh.position);
       });
     }
     //add planet system to planet3d object and to the scene

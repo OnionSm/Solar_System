@@ -1,22 +1,22 @@
 import * as THREE from "three"
+const loadTexture = new THREE.TextureLoader();
 
-const GetSun = (radius = 5, widthSegments = 64, heightSegments = 32) => 
+const GetSun = (radius = 5, sunIntensity) => 
 {
-    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments); 
+    const sunGeom = new THREE.SphereGeometry(radius, 64, 32);
 
     // Tải texture bằng TextureLoader
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('./assets/sprites/8k_sun.jpg');  // Đường dẫn đến hình ảnh texture
-    const material = new THREE.MeshBasicMaterial({ 
-        map: texture ,
-        emissive: 0x0000ff, // phát sáng
-        emissiveIntensity: 1
-    }); // Áp dụng texture vào vật liệu
+    const sunMat = new THREE.MeshStandardMaterial({
+        emissive: 0xFFF88F,
+        emissiveMap: loadTexture.load("assets/sprites/sun.jpg"),
+        emissiveIntensity: sunIntensity
+    });
     
     //const material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } ); 
-    const sphere = new THREE.Mesh( geometry, material ); 
+    const sun = new THREE.Mesh(sunGeom, sunMat);
 
-    return sphere;
+    return sun;
 }
 
 export default GetSun;
