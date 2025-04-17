@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as dat from 'dat.gui';
 import GetCamera from './assets/scripts/camera/camera,js';
 import GetSun from './assets/scripts/planets/sun.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -16,8 +17,11 @@ import GetSetting from './assets/scripts/configs/setting.js';
 import LoadAsteroids from './assets/scripts/asteroids/loadAsteroids.js';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 import { OutlinePass } from 'three/examples/jsm/Addons.js';
+import GetSun2 from './assets/scripts/planets/sun2.js';
+import GetEarthSatellite from './assets/scripts/satelites/getEarthSatelite.js';
 function LoadComponent() 
 {
+    const time = { value: 0 };
     // Scene
     const scene = GetScene();
 
@@ -30,7 +34,8 @@ function LoadComponent()
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById("gui-container").appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -53,8 +58,8 @@ function LoadComponent()
 
     // ******  BLOOM PASS  ******
     const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1, 0.4, 0.85);
-    bloomPass.threshold = 1;
-    bloomPass.radius = 0.9;
+    bloomPass.threshold = 0.75;
+    bloomPass.radius = 1.5;
     composer.addPass(bloomPass);
 
     // ****** AMBIENT LIGHT ******
@@ -63,9 +68,9 @@ function LoadComponent()
     scene.add(lightAmbient);
 
     // ******  CONTROLS  ******
-    // const gui = new dat.GUI({ autoPlace: false });
-    // const customContainer = document.getElementById('gui-container');
-    // customContainer.appendChild(gui.domElement);
+    const gui = new dat.GUI({ autoPlace: false });
+    const customContainer = document.getElementById('gui-container');
+    customContainer.appendChild(gui.domElement);
 
     // mouse movement
     const raycaster = new THREE.Raycaster();
@@ -183,7 +188,7 @@ function LoadComponent()
 
 
     // SUN
-    const sun = GetSun(697/40, settings.sunIntensity);
+    const sun= GetSun(697/40, settings.sunIntensity);
     scene.add(sun);
 
     //point light in the sun
@@ -198,8 +203,27 @@ function LoadComponent()
 
     const earth_material = GetEarthMaterial(sun.position);
     const earth_moon = GetEarthMoon(settings.accelerationOrbit);
+ 
     const earth = CreatePlanet('Earth', 6.4, 90, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene);
-
+    const earth_satellites = GetEarthSatellite(settings.accelerationOrbit);
+    earth_satellites.forEach(satellite => 
+    {
+        LoadObject(satellite.modelPath, satellite.position, satellite.scale, function(loadedModel) 
+        {
+            satellite.mesh = loadedModel;
+            earth.planetSystem.add(satellite.mesh); 
+            satellite.mesh.traverse(function (child) 
+            {
+                if (child.isMesh)
+                {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+        },scene);
+    });
+    
+    
     const mars = CreatePlanet('Mars', 3.4, 115, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene)
    
 
@@ -241,7 +265,8 @@ function LoadComponent()
 
     const neptune = CreatePlanet('Neptune', 24/4, 340, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene);
 
-    const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg,", null, null, null, null, scene)
+    const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg", null, null, null, null, scene)
+    
     // ******  PLANETS DATA  ******
     const planetData = {
         'Mercury': {
@@ -419,21 +444,39 @@ function LoadComponent()
         moon.mesh.rotateY(0.01);
     });
     }
+
+    if (earth_satellites){
+        earth_satellites.forEach(satellite => {
+        if (satellite.mesh) {
+            const time = performance.now();
+    
+            const satelliteX = earth.planet.position.x + satellite.orbitRadius * Math.cos(time * satellite.orbitSpeed);
+            const satelliteY = satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
+            const satelliteZ = mars.planet.position.z + satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
+    
+            satellite.mesh.position.set(satelliteX, satelliteY, satelliteZ);
+            satellite.mesh.rotateY(0.001);
+        }
+        });
+        }
     // Animate Mars' moons
-    if (marsMoons){
-    marsMoons.forEach(moon => {
-    if (moon.mesh) {
-        const time = performance.now();
+    if (marsMoons)
+    {
+        marsMoons.forEach(moon => {
+        if (moon.mesh) {
+            const time = performance.now();
 
-        const moonX = mars.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
-        const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
-        const moonZ = mars.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+            const moonX = mars.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
+            const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+            const moonZ = mars.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
 
-        moon.mesh.position.set(moonX, moonY, moonZ);
-        moon.mesh.rotateY(0.001);
+            moon.mesh.position.set(moonX, moonY, moonZ);
+            moon.mesh.rotateY(0.001);
+        }
+        });
     }
-    });
-    }
+
+    
 
     // Animate Jupiter's moons
     if (jupiter.moons) {
@@ -495,6 +538,8 @@ function LoadComponent()
         isZoomingOut = false;
     }
     }
+    
+    
 
     controls.update();
     requestAnimationFrame(animate);

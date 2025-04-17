@@ -9,7 +9,7 @@ const GetSun = (radius = 5, sunIntensity) =>
     const textureLoader = new THREE.TextureLoader();
     const sunMat = new THREE.MeshStandardMaterial({
         emissive: 0xFFF88F,
-        emissiveMap: loadTexture.load("assets/sprites/sun.jpg"),
+        emissiveMap: loadTexture.load("assets/sprites/8k_sun.jpg"),
         emissiveIntensity: sunIntensity
     });
     

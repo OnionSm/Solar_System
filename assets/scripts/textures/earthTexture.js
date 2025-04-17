@@ -6,7 +6,7 @@ const GetEarthMaterial = (sun_position) => {
   const earthMaterial = new THREE.ShaderMaterial({
     uniforms: {
       dayTexture: { value: loadTexture.load("assets/sprites/2k_earth_daymap.jpg") },
-      nightTexture: { value: loadTexture.load("assets/sprites/2k_earth_nightmap.jpg") },
+      nightTexture: { value: loadTexture.load("assets/sprites/8k_earth_nightmap.jpg") },
       sunPosition: { value: sun_position }
     },
     vertexShader: `

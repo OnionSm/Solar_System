@@ -7,7 +7,8 @@ const GetEarthMoon = (accelerationOrbit) =>
         bump: "assets/sprites/moonbump.jpg",
         orbitSpeed: 0.001 * accelerationOrbit,
         orbitRadius: 10
-      }]
+      }
+    ]
     return earthMoon;
 }
 
