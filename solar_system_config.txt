@@ -77,3 +77,64 @@ Thiên thể	        Distance (pixel)
 ♄ Sao Thổ           5861376  /150000  => 265.8455 
 ♅ Sao Thiên Vương	11763741 /25000  => 470.55	    
 ♆ Sao Hải Vương		18444890 /20000  => 614.83
+
+
+
+
+1 đơn vị thiên văn (AU) 149597870700m 
+
+Sao Thủy
+Cận nhật        0.307499 AU     46001195642.3793 m
+Viễn nhật       0.466697 AU     69816877462.0779 m
+Thời gian       115.88 days
+Bán kính lớn    0.387098 AU     57.91 million km
+Bán kính nhỏ    0.378825 AU
+
+Sao Kim 
+Cận nhật        0.718440 AU     107477094225.708 m
+Viễn nhật       0.728213 AU     108939114216.0591 m
+Thời gian       224.701 days    
+Bán kính lớn    0.723332 AU     108.21 million km
+Bán kính nhỏ    0.723309 AU
+
+Trái Đất                    
+Cận nhật                    147098450000 m
+Viễn nhật                   152097597000 m              
+Thời gian                   365.256363004 days
+Bán kính lớn                149598023 km
+Bán kính nhỏ                149577139855 m  
+
+Sao Hỏa         
+Cận nhật        1.3814 AU   	206650000 km
+Viễn nhật       1.66621 AU      249261000 km
+Thời gian       686.980 days
+Bán kính lớn    1.52368055 AU   227939366 km
+Bán kính nhỏ    1.517136 AU
+
+Sao Mộc
+Cận nhật        4.9506 AU       740.595 million km
+Viễn nhật       5.4570 AU       816.363 million km
+Thời gian       4,332.59 days
+Bán kính lớn    5.2038 AU       778.479 million km
+Bán kính nhỏ    5.197636 AU
+
+Sao Thổ
+Cận nhật        9.0412 AU       1,352.55 million km
+Viễn nhật       10.1238 AU      1,514.50 million km
+Thời gian       10,755.70 days
+Bán kính lớn    9.5826 AU       1,433.53 million km
+Bán kính nhỏ    9.567199 AU
+
+Sao Thiên Vương 
+Cận nhật        18.2861 AU      2.73556 billion km
+Viễn nhật       20.0965 AU      3.00639 billion km
+Thời gian       30,688.5 days
+Bán kính lớn    19.19126 AU     2.870972 billion km
+Bán kính nhỏ    19.169940 AU
+
+Sao Hải Vương
+Cận nhật        29.81 AU        4.46 billion km 
+Viễn nhật       30.33 AU        4.54 billion km
+Thời gian       60,195 days
+Bán kính lớn    30.07 AU        4.50 billion km
+Bán kính nhỏ    30.068875

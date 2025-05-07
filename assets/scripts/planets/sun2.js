@@ -1,38 +1,34 @@
 import * as THREE from "three";
-import { SimplexNoise } from "three/examples/jsm/Addons.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
+const GetSun2 = async (sunIntensity, scene) => {
+    const loader = new GLTFLoader();
 
-const loadTexture = new THREE.TextureLoader();
-const noise = new SimplexNoise();
+    return new Promise((resolve, reject) => {
+        loader.load(
+            'assets/models/sun.glb',
+            (gltf) => {
+                const sun = gltf.scene;
 
-const GetSun2 = (radius = 5, sunIntensity) => 
-{
-    const sunGeom = new THREE.SphereGeometry(radius, 128, 64); // tăng độ phân giải để noise mịn
+                // Tùy chọn: scale lại model nếu quá to hoặc quá nhỏ
+                sun.scale.set(5, 5, 5); // hoặc scale theo nhu cầu
+                sun.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material.emissive = new THREE.Color(0xFFF88F);
+                        child.material.emissiveIntensity = sunIntensity;
+                    }
+                });
 
-    // Áp dụng noise lên geometry
-    const position = sunGeom.attributes.position;
-    for (let i = 0; i < position.count; i++) 
-    {
-        const vertex = new THREE.Vector3().fromBufferAttribute(position, i);
-        const normal = vertex.clone().normalize();
-        
-        // Tăng tần số (scale) và biên độ của noise
-        const noiseVal = noise.noise3d(vertex.x * 1, vertex.y * 0.2, vertex.z * 0.2);
-        vertex.addScaledVector(normal, noiseVal * 0.0); // 0.5 = độ biến dạng
-
-        position.setXYZ(i, vertex.x, vertex.y, vertex.z);
-    }
-    position.needsUpdate = true;
-    sunGeom.computeVertexNormals();
-
-    const sunMat = new THREE.MeshStandardMaterial({
-        emissive: 0xFFF88F,
-        emissiveMap: loadTexture.load("assets/sprites/sun.jpg"),
-        emissiveIntensity: 1
+                //scene.add(sun);
+                resolve(sun);
+            },
+            undefined,
+            (error) => {
+                console.error("Error loading sun model:", error);
+                reject(error);
+            }
+        );
     });
-
-    const sun = new THREE.Mesh(sunGeom, sunMat);
-    return sun;
 };
 
 export default GetSun2;
