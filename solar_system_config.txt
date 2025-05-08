@@ -86,7 +86,7 @@ Thiên thể	        Distance (pixel)
 Sao Thủy
 Cận nhật        0.307499 AU     46001195642.3793 m
 Viễn nhật       0.466697 AU     69816877462.0779 m
-Thời gian       115.88 days
+Thời gian      	87.9691 days
 Bán kính lớn    0.387098 AU     57.91 million km
 Bán kính nhỏ    0.378825 AU
 

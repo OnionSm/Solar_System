@@ -1,6 +1,9 @@
 import * as THREE from "three"
+import CalculateFocalDistance from "../utils/calculateFocalDistance.js";
+
 const loadTexture = new THREE.TextureLoader();
-const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atmosphere, moons, scene) =>
+const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atmosphere, moons, scene, 
+  minor_axis, major_axis, min_distance, max_distance) =>
 {
 
     let material;
@@ -31,17 +34,25 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
     planetSystem.add(planet);
     let Atmosphere;
     let Ring;
-    planet.position.x = position;
+    //planet.position.x = position;
     planet.rotation.z = tilt * Math.PI / 180;
   
     // add orbit path
+    const multiplier = position / min_distance;
+    console.log("multiplier", multiplier);
+    const focalDistance = CalculateFocalDistance(major_axis, minor_axis) * multiplier;
+    console.log("focalDistance", focalDistance);
+    console.log("minor_axis", minor_axis * multiplier);
+    console.log("major_axis", major_axis * multiplier);
     const orbitPath = new THREE.EllipseCurve(
-      0, 0,            // ax, aY
-      position, position, // xRadius, yRadius
+      focalDistance, 0,            // ax, aY
+      major_axis * multiplier, minor_axis * multiplier, // xRadius, yRadius
       0, 2 * Math.PI,   // aStartAngle, aEndAngle
       false,            // aClockwise
-      0                 // aRotation
+      0          // aRotation
   );
+
+    planet.position.x = max_distance * multiplier; 
   
     const pathPoints = orbitPath.getPoints(100);
     const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
@@ -66,7 +77,8 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
     }
     
     //add atmosphere
-    if(atmosphere){
+    if(atmosphere)
+    {
       const atmosphereGeom = new THREE.SphereGeometry(size+0.1, 32, 20);
       const atmosphereMaterial = new THREE.MeshPhongMaterial({
         map:loadTexture.load(atmosphere),
