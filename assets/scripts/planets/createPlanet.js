@@ -44,7 +44,7 @@ const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump
     // console.log("minor_axis", minor_axis * distance_multiplier);
     // console.log("major_axis", major_axis * distance_multiplier);
     const orbitPath = new THREE.EllipseCurve(
-      focalDistance, 0,            // ax, aY
+      -focalDistance, 0,            // ax, aY
       major_axis * distance_multiplier, minor_axis * distance_multiplier, // xRadius, yRadius
       0, 2 * Math.PI,   // aStartAngle, aEndAngle
       false,            // aClockwise

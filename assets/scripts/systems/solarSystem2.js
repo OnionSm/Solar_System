@@ -25,6 +25,7 @@ import GetSunConfig from '../stars/getSunConfig.js';
 import GetPlanetSetting from '../configs/planet_configs.js';
 import CalculatePlanetPosition from '../utils/calculatePlanetPosition.js';
 import GetPlanetData from '../configs/planetData.js';
+import getTrueAnomalyAfterTime from '../utils/getAnomalyAngle.js';
 const SolarSystem2 = () =>
 {
     const time = { value: 0 };
@@ -322,7 +323,7 @@ const SolarSystem2 = () =>
     const planetData = GetPlanetData();
 
     let asteroids = [];
-    LoadAsteroids('assets/scripts/models/asteroidPack.glb', 1000, 130, 160, asteroids, scene);
+    LoadAsteroids('assets/scripts/models/asteroidPack.glb', 1000, 150, 180, asteroids, scene);
     LoadAsteroids('assets/scripts/models/asteroidPack.glb', 3000, 352, 370, asteroids, scene);
 
     // Array of planets and atmospheres for raycasting
@@ -375,205 +376,284 @@ const SolarSystem2 = () =>
     {
         sun.rotateY(0.001 * settings.acceleration);
     }
-    function MercuryAnimation()
+    function MercuryAnimation(deltaTime)
     {
-        const deltaTime = clock.getDelta();
-        console.log("Delta time", deltaTime);
         mercury.planet.rotateY(0.001 * settings.acceleration);
-        console.log("Angle offset", mercury_settings.angle_offset);
-        const current_angle = mercury_settings.current_angle + (mercury_settings.angle_offset * settings.time_speed * deltaTime);
-        mercury_settings.current_angle = current_angle;
-        console.log("Mercury current angle", current_angle);
+        // const current_angle = mercury_settings.current_angle + (mercury_settings.angle_offset * settings.time_speed * deltaTime);
+        // mercury_settings.current_angle = current_angle;
+        let current_time = mercury_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % mercury_settings.seconds;
+        mercury_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, mercury_settings.seconds, mercury_settings.eccentricity);
+        mercury_settings.current_angle = true_anomaly;
         const {x,y} = CalculatePlanetPosition(mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.eccentricity, mercury_settings.distance_multiplier, mercury_settings.current_angle);
-        mercury.planet.position.x = x - mercury.orbit_center.x;
-        mercury.planet.position.z = y + mercury.orbit_center.y;
-        
+        mercury.planet.position.x = x;
+        mercury.planet.position.z = y;
     }
-    function VenusAnimation()
-    {
+    function VenusAnimation(deltaTime)
+    {   
         venus.planet.rotateY(0.0005 * settings.acceleration);
+        // const current_angle = venus_settings.current_angle + (venus_settings.angle_offset * settings.time_speed * deltaTime);
+        // venus_settings.current_angle = current_angle;
+        let current_time = venus_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % venus_settings.seconds;
+        venus_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, venus_settings.seconds, venus_settings.eccentricity);
+        venus_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(venus_settings.minor_axis, venus_settings.major_axis, venus_settings.eccentricity, venus_settings.distance_multiplier, venus_settings.current_angle);
+        venus.planet.position.x = x;
+        venus.planet.position.z = y;
     }
-    function EarthAnimation()
+    function EarthAnimation(deltaTime)
     {
         earth.planet.rotateY(0.005 * settings.acceleration);
+        // const current_angle = earth_settings.current_angle + (earth_settings.angle_offset * settings.time_speed * deltaTime);
+        // earth_settings.current_angle = current_angle;
+        let current_time = earth_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % earth_settings.seconds;
+        earth_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, earth_settings.seconds, earth_settings.eccentricity);
+        earth_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(earth_settings.minor_axis, earth_settings.major_axis, earth_settings.eccentricity, earth_settings.distance_multiplier, earth_settings.current_angle);
+        earth.planet.position.x = x;
+        earth.planet.position.z = y;
     }
-    function MarsAnimation()
+    function MarsAnimation(deltaTime)
     {
         mars.planet.rotateY(0.01 * settings.acceleration);
+        // const current_angle = mars_settings.current_angle + (mars_settings.angle_offset * settings.time_speed * deltaTime);
+        // mars_settings.current_angle = current_angle;
+        let current_time = mars_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % mars_settings.seconds;
+        mars_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, mars_settings.seconds, mars_settings.eccentricity);
+        mars_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(mars_settings.minor_axis, mars_settings.major_axis, mars_settings.eccentricity, mars_settings.distance_multiplier, mars_settings.current_angle);
+        mars.planet.position.x = x;
+        mars.planet.position.z = y;
     }
-    function JupiterAnimation()
+    function JupiterAnimation(deltaTime)
     {
         jupiter.planet.rotateY(0.005 * settings.acceleration);
+        // const current_angle = jupiter_settings.current_angle + (jupiter_settings.angle_offset * settings.time_speed * deltaTime);
+        // jupiter_settings.current_angle = current_angle;
+        let current_time = jupiter_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % jupiter_settings.seconds;
+        jupiter_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, jupiter_settings.seconds, jupiter_settings.eccentricity);
+        jupiter_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.eccentricity, jupiter_settings.distance_multiplier, jupiter_settings.current_angle);
+        jupiter.planet.position.x = x;
+        jupiter.planet.position.z = y;
     }
-    function SaturnAnimation()
+    function SaturnAnimation(deltaTime)
     {
         saturn.planet.rotateY(0.01 * settings.acceleration);
+        // const current_angle = saturn_settings.current_angle + (saturn_settings.angle_offset * settings.time_speed * deltaTime);
+        // saturn_settings.current_angle = current_angle;
+        let current_time = saturn_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % saturn_settings.seconds;
+        saturn_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, saturn_settings.seconds, saturn_settings.eccentricity);
+        saturn_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.eccentricity, saturn_settings.distance_multiplier, saturn_settings.current_angle);
+        saturn.planet.position.x = x;
+        saturn.planet.position.z = y;
+        saturn.Ring.position.x = x;
+        saturn.Ring.position.z = y;
     }
-    function UranusAnimation()
+    function UranusAnimation(deltaTime)
     {
         uranus.planet.rotateY(0.005 * settings.acceleration);
+        // const current_angle = uranus_settings.current_angle + (uranus_settings.angle_offset * settings.time_speed * deltaTime);
+        // uranus_settings.current_angle = current_angle;
+        let current_time = uranus_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % uranus_settings.seconds;
+        uranus_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, uranus_settings.seconds, uranus_settings.eccentricity);
+        uranus_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.eccentricity, uranus_settings.distance_multiplier, uranus_settings.current_angle);
+        uranus.planet.position.x = x;
+        uranus.planet.position.z = y;
     }
-    function NeptuneAnimation()
+    function NeptuneAnimation(deltaTime)
     {
         neptune.planet.rotateY(0.005 * settings.acceleration);
+        // const current_angle = neptune_settings.current_angle + (neptune_settings.angle_offset * settings.time_speed * deltaTime);
+        // neptune_settings.current_angle = current_angle;
+        let current_time = neptune_settings.current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % neptune_settings.seconds;
+        neptune_settings.current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, neptune_settings.seconds, neptune_settings.eccentricity);
+        neptune_settings.current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.eccentricity, neptune_settings.distance_multiplier, neptune_settings.current_angle);
+        neptune.planet.position.x = x;
+        neptune.planet.position.z = y;
     }
-
+    let count = 0;
     function animate()
     {
-    
-    //stats.begin();
-    
-    //rotating planets around the sun and itself
-    // if(sun_config[0].mesh != null)
-    // {
-    //     sun_config[0].mesh.rotateY(0.001 * settings.acceleration);
-    // }
-    SunAnimation();
-    MercuryAnimation();
-    //mercury.planet3d.rotateY(0.004 * settings.accelerationOrbit);
-    VenusAnimation();
-    venus.Atmosphere.rotateY(0.0005 * settings.acceleration);
-    //venus.planet3d.rotateY(0.0006 * settings.accelerationOrbit);
-    EarthAnimation();
-    earth.Atmosphere.rotateY(0.001 * settings.acceleration);
-    //earth.planet3d.rotateY(0.001 * settings.accelerationOrbit);
-    MarsAnimation();
-    //mars.planet3d.rotateY(0.0007 * settings.accelerationOrbit);
-    JupiterAnimation();
-    //jupiter.planet3d.rotateY(0.0003 * settings.accelerationOrbit);
-    SaturnAnimation();
-    //saturn.planet3d.rotateY(0.0002 * settings.accelerationOrbit);
-    UranusAnimation();
-    //uranus.planet3d.rotateY(0.0001 * settings.accelerationOrbit);
-    NeptuneAnimation();
-    //neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
-    // pluto.planet.rotateY(0.001 * settings.acceleration)
-    // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
-    
+        const deltaTime = clock.getDelta();
+        //stats.begin();
+        
+        //rotating planets around the sun and itself
+        // if(sun_config[0].mesh != null)
+        // {
+        //     sun_config[0].mesh.rotateY(0.001 * settings.acceleration);
+        // }
+        count += (deltaTime * settings.time_speed);
+        let days = Math.floor(count / 86400);
+        let hours = Math.floor((count % 86400) / 3600);
+        let minutes = Math.floor((count % 3600) / 60);
+        let seconds = count % 60;
+        console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
 
-    // Animate Earth's moon
-    if (earth.moons) {
-    earth.moons.forEach(moon => {
-        const time = performance.now();
-        const tiltAngle = 5 * Math.PI / 180;
+        SunAnimation();
+        MercuryAnimation(deltaTime);
+        //mercury.planet3d.rotateY(0.004 * settings.accelerationOrbit);
+        VenusAnimation(deltaTime);
+        venus.Atmosphere.rotateY(0.0005 * settings.acceleration);
+        //venus.planet3d.rotateY(0.0006 * settings.accelerationOrbit);
+        EarthAnimation(deltaTime);
+        earth.Atmosphere.rotateY(0.001 * settings.acceleration);
+        //earth.planet3d.rotateY(0.001 * settings.accelerationOrbit);
+        MarsAnimation(deltaTime);
+        //mars.planet3d.rotateY(0.0007 * settings.accelerationOrbit);
+        JupiterAnimation(deltaTime);
+        //jupiter.planet3d.rotateY(0.0003 * settings.accelerationOrbit);
+        SaturnAnimation(deltaTime);
+        //saturn.planet3d.rotateY(0.0002 * settings.accelerationOrbit);
+        UranusAnimation(deltaTime);
+        //uranus.planet3d.rotateY(0.0001 * settings.accelerationOrbit);
+        NeptuneAnimation(deltaTime);
+        //neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
+        // pluto.planet.rotateY(0.001 * settings.acceleration)
+        // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
+        
 
-        const moonX = earth.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
-        const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed) * Math.sin(tiltAngle);
-        const moonZ = earth.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed) * Math.cos(tiltAngle);
-
-        moon.mesh.position.set(moonX, moonY, moonZ);
-        moon.mesh.rotateY(0.01);
-    });
-    }
-
-    if (earth_satellites){
-        earth_satellites.forEach(satellite => {
-        if (satellite.mesh) {
+        // Animate Earth's moon
+        if (earth.moons) {
+        earth.moons.forEach(moon => {
             const time = performance.now();
-    
-            const satelliteX = earth.planet.position.x + satellite.orbitRadius * Math.cos(time * satellite.orbitSpeed);
-            const satelliteY = satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
-            const satelliteZ = mars.planet.position.z + satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
-    
-            satellite.mesh.position.set(satelliteX, satelliteY, satelliteZ);
-            satellite.mesh.rotateY(0.001);
-        }
-        });
-        }
-    // Animate Mars' moons
-    if (marsMoons)
-    {
-        marsMoons.forEach(moon => {
-        if (moon.mesh) {
-            const time = performance.now();
+            const tiltAngle = 5 * Math.PI / 180;
 
-            const moonX = mars.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
-            const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
-            const moonZ = mars.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+            const moonX = earth.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
+            const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed) * Math.sin(tiltAngle);
+            const moonZ = earth.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed) * Math.cos(tiltAngle);
 
             moon.mesh.position.set(moonX, moonY, moonZ);
-            moon.mesh.rotateY(0.001);
-        }
+            moon.mesh.rotateY(0.01);
         });
-    }
+        }
 
-    
+        if (earth_satellites){
+            earth_satellites.forEach(satellite => {
+            if (satellite.mesh) {
+                const time = performance.now();
+        
+                const satelliteX = earth.planet.position.x + satellite.orbitRadius * Math.cos(time * satellite.orbitSpeed);
+                const satelliteY = satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
+                const satelliteZ = mars.planet.position.z + satellite.orbitRadius * Math.sin(time * satellite.orbitSpeed);
+        
+                satellite.mesh.position.set(satelliteX, satelliteY, satelliteZ);
+                satellite.mesh.rotateY(0.001);
+            }
+            });
+            }
+        // Animate Mars' moons
+        if (marsMoons)
+        {
+            marsMoons.forEach(moon => {
+            if (moon.mesh) {
+                const time = performance.now();
 
-    // Animate Jupiter's moons
-    if (jupiter.moons) {
-    jupiter.moons.forEach(moon => {
-        const time = performance.now();
-        const moonX = jupiter.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
-        const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
-        const moonZ = jupiter.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+                const moonX = mars.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
+                const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+                const moonZ = mars.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
 
-        moon.mesh.position.set(moonX, moonY, moonZ);
-        moon.mesh.rotateY(0.01);
-    });
-    }
+                moon.mesh.position.set(moonX, moonY, moonZ);
+                moon.mesh.rotateY(0.001);
+            }
+            });
+        }
 
-    // Rotate asteroids
-    asteroids.forEach(asteroid => {
-    asteroid.rotation.y += 0.0001;
-    asteroid.position.x = asteroid.position.x * Math.cos(0.0001 * settings.accelerationOrbit) + asteroid.position.z * Math.sin(0.0001 * settings.accelerationOrbit);
-    asteroid.position.z = asteroid.position.z * Math.cos(0.0001 * settings.accelerationOrbit) - asteroid.position.x * Math.sin(0.0001 * settings.accelerationOrbit);
-    });
+        
 
-    // ****** OUTLINES ON PLANETS ******
-    raycaster.setFromCamera(mouse, camera);
+        // Animate Jupiter's moons
+        if (jupiter.moons) {
+        jupiter.moons.forEach(moon => {
+            const time = performance.now();
+            const moonX = jupiter.planet.position.x + moon.orbitRadius * Math.cos(time * moon.orbitSpeed);
+            const moonY = moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
+            const moonZ = jupiter.planet.position.z + moon.orbitRadius * Math.sin(time * moon.orbitSpeed);
 
-    // Check for intersections
-    var intersects = raycaster.intersectObjects(raycastTargets);
+            moon.mesh.position.set(moonX, moonY, moonZ);
+            moon.mesh.rotateY(0.01);
+        });
+        }
 
-    // Reset all outlines
-    outlinePass.selectedObjects = [];
+        // Rotate asteroids
+        asteroids.forEach(asteroid => {
+        asteroid.rotation.y += 0.0001;
+        asteroid.position.x = asteroid.position.x * Math.cos(0.0001 * settings.accelerationOrbit) + asteroid.position.z * Math.sin(0.0001 * settings.accelerationOrbit);
+        asteroid.position.z = asteroid.position.z * Math.cos(0.0001 * settings.accelerationOrbit) - asteroid.position.x * Math.sin(0.0001 * settings.accelerationOrbit);
+        });
 
-    if (intersects.length > 0) {
-    const intersectedObject = intersects[0].object;
+        // ****** OUTLINES ON PLANETS ******
+        raycaster.setFromCamera(mouse, camera);
 
-    // If the intersected object is an atmosphere, find the corresponding planet
-    if (intersectedObject === earth.Atmosphere) {
-        outlinePass.selectedObjects = [earth.planet];
-    } else if (intersectedObject === venus.Atmosphere) {
-        outlinePass.selectedObjects = [venus.planet];
-    } else {
-        // For other planets, outline the intersected object itself
-        outlinePass.selectedObjects = [intersectedObject];
-    }
-    }
-    // ******  ZOOM IN/OUT  ******
-    if (isMovingTowardsPlanet) {
-    // Smoothly move the camera towards the target position
-    camera.position.lerp(targetCameraPosition, 0.03);
+        // Check for intersections
+        var intersects = raycaster.intersectObjects(raycastTargets);
 
-    // Check if the camera is close to the target position
-    if (camera.position.distanceTo(targetCameraPosition) < 1) {
-        isMovingTowardsPlanet = false;
-        showPlanetInfo(selectedPlanet.name);
+        // Reset all outlines
+        outlinePass.selectedObjects = [];
 
-    }
-    } else if (isZoomingOut) {
-    camera.position.lerp(zoomOutTargetPosition, 0.05);
+        if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
 
-    if (camera.position.distanceTo(zoomOutTargetPosition) < 1) {
-        isZoomingOut = false;
-    }
-    }
-    stats.end();
-    //stats.end();
+        // If the intersected object is an atmosphere, find the corresponding planet
+        if (intersectedObject === earth.Atmosphere) {
+            outlinePass.selectedObjects = [earth.planet];
+        } else if (intersectedObject === venus.Atmosphere) {
+            outlinePass.selectedObjects = [venus.planet];
+        } else {
+            // For other planets, outline the intersected object itself
+            outlinePass.selectedObjects = [intersectedObject];
+        }
+        }
+        // ******  ZOOM IN/OUT  ******
+        if (isMovingTowardsPlanet) {
+        // Smoothly move the camera towards the target position
+        camera.position.lerp(targetCameraPosition, 0.03);
 
-    controls.update();
-    requestAnimationFrame(animate);
-    composer.render();
-    }
-    animate();
-    window.addEventListener('mousemove', onMouseMove, false);
-    window.addEventListener('mousedown', onDocumentMouseDown, false);
-    window.addEventListener('resize', function(){
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth,window.innerHeight);
-      composer.setSize(window.innerWidth,window.innerHeight);
+        // Check if the camera is close to the target position
+        if (camera.position.distanceTo(targetCameraPosition) < 1) {
+            isMovingTowardsPlanet = false;
+            showPlanetInfo(selectedPlanet.name);
+
+        }
+        } else if (isZoomingOut) {
+        camera.position.lerp(zoomOutTargetPosition, 0.05);
+
+        if (camera.position.distanceTo(zoomOutTargetPosition) < 1) {
+            isZoomingOut = false;
+        }
+        }
+        stats.end();
+        //stats.end();
+
+        controls.update();
+        requestAnimationFrame(animate);
+        composer.render();
+        }
+        animate();
+        window.addEventListener('mousemove', onMouseMove, false);
+        window.addEventListener('mousedown', onDocumentMouseDown, false);
+        window.addEventListener('resize', function(){
+        camera.aspect = window.innerWidth/window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth,window.innerHeight);
+        composer.setSize(window.innerWidth,window.innerHeight);
     });
     
 }
