@@ -2,7 +2,7 @@ import * as THREE from "three"
 import CalculateFocalDistance from "../utils/calculateFocalDistance.js";
 
 const loadTexture = new THREE.TextureLoader();
-const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atmosphere, moons, scene, 
+const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump, ring, atmosphere, moons, scene, 
   minor_axis, major_axis, min_distance, max_distance) =>
 {
 
@@ -38,21 +38,21 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
     planet.rotation.z = tilt * Math.PI / 180;
   
     // add orbit path
-    const multiplier = position / min_distance;
-    console.log("multiplier", multiplier);
-    const focalDistance = CalculateFocalDistance(major_axis, minor_axis) * multiplier;
-    console.log("focalDistance", focalDistance);
-    console.log("minor_axis", minor_axis * multiplier);
-    console.log("major_axis", major_axis * multiplier);
+    //console.log("Planet", name, "multiplier", distance_multiplier);
+    const focalDistance = CalculateFocalDistance(major_axis, minor_axis) * distance_multiplier;
+    // console.log("focalDistance", focalDistance);
+    // console.log("minor_axis", minor_axis * distance_multiplier);
+    // console.log("major_axis", major_axis * distance_multiplier);
     const orbitPath = new THREE.EllipseCurve(
       focalDistance, 0,            // ax, aY
-      major_axis * multiplier, minor_axis * multiplier, // xRadius, yRadius
+      major_axis * distance_multiplier, minor_axis * distance_multiplier, // xRadius, yRadius
       0, 2 * Math.PI,   // aStartAngle, aEndAngle
       false,            // aClockwise
       0          // aRotation
-  );
+    );
+    const orbit_center = new THREE.Vector3(focalDistance,0,0);
 
-    planet.position.x = max_distance * multiplier; 
+    planet.position.x = max_distance * distance_multiplier; 
   
     const pathPoints = orbitPath.getPoints(100);
     const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
@@ -60,6 +60,7 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
     const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
     orbit.rotation.x = Math.PI / 2;
     planetSystem.add(orbit);
+    
   
     //add ring
     if(ring)
@@ -71,7 +72,7 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
       });
       Ring = new THREE.Mesh(RingGeo, RingMat);
       planetSystem.add(Ring);
-      Ring.position.x = position;
+      Ring.position.x = max_distance * distance_multiplier;
       Ring.rotation.x = -0.5 *Math.PI;
       Ring.rotation.y = -tilt * Math.PI / 180;
     }
@@ -117,7 +118,7 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
         const moonGeometry = new THREE.SphereGeometry(moon.size, 32, 20);
         const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
         const moonOrbitDistance = size * 1.5;
-        moonMesh.position.set(moonOrbitDistance + position.x, 0, 0);
+        moonMesh.position.set(moonOrbitDistance + planet.position.x, 0, 0);
         planetSystem.add(moonMesh);
         moon.mesh = moonMesh;
         //console.log(moonMesh.position);
@@ -158,7 +159,7 @@ const CreatePlanet = (planetName, size, position, tilt, texture, bump, ring, atm
     //add planet system to planet3d object and to the scene
     planet3d.add(planetSystem);
     scene.add(planet3d);
-    return {name, planet, planet3d, Atmosphere, moons, planetSystem, Ring};
+    return {name, planet, planet3d, Atmosphere, moons, planetSystem, Ring, orbit_center};
   }
 
 export default CreatePlanet;

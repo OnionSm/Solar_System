@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
+import Stats from 'stats.js';
 import GetCamera from '../camera/camera.js';
 import GetSun from '../planets/sun.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -22,11 +23,22 @@ import GetSun2 from '../planets/sun2.js';
 import GetEarthSatellite from '../satelites/getEarthSatelite.js';
 import GetSunConfig from '../stars/getSunConfig.js';
 import GetPlanetSetting from '../configs/planet_configs.js';
+import CalculatePlanetPosition from '../utils/calculatePlanetPosition.js';
+import GetPlanetData from '../configs/planetData.js';
 const SolarSystem2 = () =>
 {
     const time = { value: 0 };
     // Scene
     const scene = GetScene();
+    const stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: memory
+    //document.body.appendChild(stats.dom);
+    
+    
+    const axesHelper = new THREE.AxesHelper(50); // chiều dài trục là 5 đơn vị
+    scene.add(axesHelper);
+
+    const clock = new THREE.Clock();
 
     // SETTING
     const settings = GetSetting();
@@ -236,14 +248,14 @@ const SolarSystem2 = () =>
     const neptune_settings = planetSettings[7];
 
     // PLANETS
-    const mercury = CreatePlanet('Mercury', 2.4, 30, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance);
-    const venus = CreatePlanet('Venus', 6.1, 65, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance);
+    const mercury = CreatePlanet('Mercury', 2.4, mercury_settings.distance_multiplier, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance);
+    const venus = CreatePlanet('Venus', 6.1, venus_settings.distance_multiplier, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance);
 
 
     const earth_material = GetEarthMaterial(new THREE.Vector3(0,0,0));
     const earth_moon = GetEarthMoon(settings.accelerationOrbit);
  
-    const earth = CreatePlanet('Earth', 6.4, 90, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance);
+    const earth = CreatePlanet('Earth', 6.4, earth_settings.distance_multiplier, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance);
     const earth_satellites = GetEarthSatellite(settings.accelerationOrbit);
     earth_satellites.forEach(satellite => 
     {
@@ -263,7 +275,7 @@ const SolarSystem2 = () =>
     });
     
     
-    const mars = CreatePlanet('Mars', 3.4, 115, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance);
+    const mars = CreatePlanet('Mars', 3.4, mars_settings.distance_multiplier, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance);
    
 
     const marsMoons = GetMarsMoon(settings.accelerationOrbit);
@@ -286,110 +298,28 @@ const SolarSystem2 = () =>
 
 
     const jupiterMoons = GetJupiterMoons(settings.accelerationOrbit);
-    const jupiter = CreatePlanet('Jupiter', 69/4, 200, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance);
+    const jupiter = CreatePlanet('Jupiter', 69/4, jupiter_settings.distance_multiplier, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance);
 
 
-    const saturn = CreatePlanet('Saturn', 58/4, 270, 26, "assets/sprites/saturnmap.jpg", null, {
+    const saturn = CreatePlanet('Saturn', 58/4, saturn_settings.distance_multiplier, 26, "assets/sprites/saturnmap.jpg", null, {
       innerRadius: 18, 
       outerRadius: 29, 
       texture: "assets/sprites/saturn_ring.png"
     }, null, null, scene, saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.min_distance, saturn_settings.max_distance);
 
 
-    const uranus = CreatePlanet('Uranus', 25/4, 320, 82, "assets/sprites/uranus.jpg", null, {
+    const uranus = CreatePlanet('Uranus', 25/4, uranus_settings.distance_multiplier, 82, "assets/sprites/uranus.jpg", null, {
       innerRadius: 6, 
       outerRadius: 8, 
       texture: "assets/sprites/uranus_ring.png"
     }, null, null, scene, uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.min_distance, uranus_settings.max_distance);
 
-    const neptune = CreatePlanet('Neptune', 24/4, 340, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance);
+    const neptune = CreatePlanet('Neptune', 24/4, neptune_settings.distance_multiplier, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance);
 
     //const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg", null, null, null, null, scene, pluto_settings.minor_axis, pluto_settings.major_axis, pluto_settings.min_distance, pluto_settings.max_distance  );
     
     // ******  PLANETS DATA  ******
-    const planetData = {
-        'Mercury': {
-            radius: '2,439.7 km',
-            tilt: '0.034°',
-            rotation: '58.6 Earth days',
-            orbit: '88 Earth days',
-            distance: '57.9 million km',
-            moons: '0',
-            info: 'The smallest planet in our solar system and nearest to the Sun.'
-        },
-        'Venus': {
-            radius: '6,051.8 km',
-            tilt: '177.4°',
-            rotation: '243 Earth days',
-            orbit: '225 Earth days',
-            distance: '108.2 million km',
-            moons: '0',
-            info: 'Second planet from the Sun, known for its extreme temperatures and thick atmosphere.'
-        },
-        'Earth': {
-            radius: '6,371 km',
-            tilt: '23.5°',
-            rotation: '24 hours',
-            orbit: '365 days',
-            distance: '150 million km',
-            moons: '1 (Moon)',
-            info: 'Third planet from the Sun and the only known planet to harbor life.'
-        },
-        'Mars': {
-            radius: '3,389.5 km',
-            tilt: '25.19°',
-            rotation: '1.03 Earth days',
-            orbit: '687 Earth days',
-            distance: '227.9 million km',
-            moons: '2 (Phobos and Deimos)',
-            info: 'Known as the Red Planet, famous for its reddish appearance and potential for human colonization.'
-        },
-        'Jupiter': {
-            radius: '69,911 km',
-            tilt: '3.13°',
-            rotation: '9.9 hours',
-            orbit: '12 Earth years',
-            distance: '778.5 million km',
-            moons: '95 known moons (Ganymede, Callisto, Europa, Io are the 4 largest)',
-            info: 'The largest planet in our solar system, known for its Great Red Spot.'
-        },
-        'Saturn': {
-            radius: '58,232 km',
-            tilt: '26.73°',
-            rotation: '10.7 hours',
-            orbit: '29.5 Earth years',
-            distance: '1.4 billion km',
-            moons: '146 known moons',
-            info: 'Distinguished by its extensive ring system, the second-largest planet in our solar system.'
-        },
-        'Uranus': {
-            radius: '25,362 km',
-            tilt: '97.77°',
-            rotation: '17.2 hours',
-            orbit: '84 Earth years',
-            distance: '2.9 billion km',
-            moons: '27 known moons',
-            info: 'Known for its unique sideways rotation and pale blue color.'
-        },
-        'Neptune': {
-            radius: '24,622 km',
-            tilt: '28.32°',
-            rotation: '16.1 hours',
-            orbit: '165 Earth years',
-            distance: '4.5 billion km',
-            moons: '14 known moons',
-            info: 'The most distant planet from the Sun in our solar system, known for its deep blue color.'
-        },
-        // 'Pluto': {
-        //     radius: '1,188.3 km',
-        //     tilt: '122.53°',
-        //     rotation: '6.4 Earth days',
-        //     orbit: '248 Earth years',
-        //     distance: '5.9 billion km',
-        //     moons: '5 (Charon, Styx, Nix, Kerberos, Hydra)',
-        //     info: 'Originally classified as the ninth planet, Pluto is now considered a dwarf planet.'
-        // }
-    };
+    const planetData = GetPlanetData();
 
     let asteroids = [];
     LoadAsteroids('assets/scripts/models/asteroidPack.glb', 1000, 130, 160, asteroids, scene);
@@ -441,38 +371,85 @@ const SolarSystem2 = () =>
     neptune.planet.receiveShadow = true;
     //pluto.planet.receiveShadow = true;
 
-
-
+    function SunAnimation()
+    {
+        sun.rotateY(0.001 * settings.acceleration);
+    }
+    function MercuryAnimation()
+    {
+        const deltaTime = clock.getDelta();
+        console.log("Delta time", deltaTime);
+        mercury.planet.rotateY(0.001 * settings.acceleration);
+        console.log("Angle offset", mercury_settings.angle_offset);
+        const current_angle = mercury_settings.current_angle + (mercury_settings.angle_offset * settings.time_speed * deltaTime);
+        mercury_settings.current_angle = current_angle;
+        console.log("Mercury current angle", current_angle);
+        const {x,y} = CalculatePlanetPosition(mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.eccentricity, mercury_settings.distance_multiplier, mercury_settings.current_angle);
+        mercury.planet.position.x = x - mercury.orbit_center.x;
+        mercury.planet.position.z = y + mercury.orbit_center.y;
+        
+    }
+    function VenusAnimation()
+    {
+        venus.planet.rotateY(0.0005 * settings.acceleration);
+    }
+    function EarthAnimation()
+    {
+        earth.planet.rotateY(0.005 * settings.acceleration);
+    }
+    function MarsAnimation()
+    {
+        mars.planet.rotateY(0.01 * settings.acceleration);
+    }
+    function JupiterAnimation()
+    {
+        jupiter.planet.rotateY(0.005 * settings.acceleration);
+    }
+    function SaturnAnimation()
+    {
+        saturn.planet.rotateY(0.01 * settings.acceleration);
+    }
+    function UranusAnimation()
+    {
+        uranus.planet.rotateY(0.005 * settings.acceleration);
+    }
+    function NeptuneAnimation()
+    {
+        neptune.planet.rotateY(0.005 * settings.acceleration);
+    }
 
     function animate()
     {
-
+    
+    //stats.begin();
+    
     //rotating planets around the sun and itself
     // if(sun_config[0].mesh != null)
     // {
     //     sun_config[0].mesh.rotateY(0.001 * settings.acceleration);
     // }
-    sun.rotateY(0.001 * settings.acceleration);
-    mercury.planet.rotateY(0.001 * settings.acceleration);
+    SunAnimation();
+    MercuryAnimation();
     //mercury.planet3d.rotateY(0.004 * settings.accelerationOrbit);
-    venus.planet.rotateY(0.0005 * settings.acceleration)
+    VenusAnimation();
     venus.Atmosphere.rotateY(0.0005 * settings.acceleration);
     //venus.planet3d.rotateY(0.0006 * settings.accelerationOrbit);
-    earth.planet.rotateY(0.005 * settings.acceleration);
+    EarthAnimation();
     earth.Atmosphere.rotateY(0.001 * settings.acceleration);
     //earth.planet3d.rotateY(0.001 * settings.accelerationOrbit);
-    mars.planet.rotateY(0.01 * settings.acceleration);
+    MarsAnimation();
     //mars.planet3d.rotateY(0.0007 * settings.accelerationOrbit);
-    jupiter.planet.rotateY(0.005 * settings.acceleration);
+    JupiterAnimation();
     //jupiter.planet3d.rotateY(0.0003 * settings.accelerationOrbit);
-    saturn.planet.rotateY(0.01 * settings.acceleration);
+    SaturnAnimation();
     //saturn.planet3d.rotateY(0.0002 * settings.accelerationOrbit);
-    uranus.planet.rotateY(0.005 * settings.acceleration);
+    UranusAnimation();
     //uranus.planet3d.rotateY(0.0001 * settings.accelerationOrbit);
-    neptune.planet.rotateY(0.005 * settings.acceleration);
+    NeptuneAnimation();
     //neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
     // pluto.planet.rotateY(0.001 * settings.acceleration)
     // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
+    
 
     // Animate Earth's moon
     if (earth.moons) {
@@ -582,8 +559,8 @@ const SolarSystem2 = () =>
         isZoomingOut = false;
     }
     }
-    
-    
+    stats.end();
+    //stats.end();
 
     controls.update();
     requestAnimationFrame(animate);
