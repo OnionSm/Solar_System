@@ -14,7 +14,8 @@
     "dat.gui": "^0.7.9",
     "simplex-noise": "^4.0.3",
     "stats.js": "^0.17.0",
-    "three": "^0.174.0"
+    "three": "^0.174.0",
+    "tweakpane": "^4.0.5"
   },
   "devDependencies": {
     "vite": "^6.2.5"

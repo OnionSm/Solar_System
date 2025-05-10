@@ -38,3 +38,19 @@ p {
     color: white; 
     line-height: 1.5; 
 }
+html, body {
+    height: 100%;
+    width: 100%;
+    /* background-color: black; */
+  }
+#slider-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    pointer-events: all;
+    width: 200px;
+    height: 200px;
+    background-color: rgb(88, 77, 77);
+
+}

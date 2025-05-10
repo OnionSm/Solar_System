@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
+import { Pane } from 'tweakpane';
 import Stats from 'stats.js';
 import GetCamera from '../camera/camera.js';
 import GetSun from '../planets/sun.js';
@@ -28,6 +29,8 @@ import GetPlanetData from '../configs/planetData.js';
 import getTrueAnomalyAfterTime from '../utils/getAnomalyAngle.js';
 const SolarSystem2 = () =>
 {
+
+    
     const time = { value: 0 };
     // Scene
     const scene = GetScene();
@@ -44,14 +47,75 @@ const SolarSystem2 = () =>
     // SETTING
     const settings = GetSetting();
     const planetSettings = GetPlanetSetting();
+
+    // const gui = new dat.GUI({ autoPlace: false });
+    // const customContainer = document.getElementById('gui-container');
+    // customContainer.appendChild(gui.domElement);
+
+    // const timeOptions = {
+    //     "1 giây": 1,
+    //     "2 giây": 2,
+    //     "5 giây": 5,
+    //     "1 phút": 60,
+    //     "30 phút": 1800,
+    //     "1 giờ": 3600,
+    //     "2 giờ": 7200,
+    //     "3 giờ": 10800,
+    //     "12 giờ": 43200,
+    //     "1 ngày": 86400
+    //   };
+    
+    //   // Thêm dropdown vào GUI
+    
+    // // ****** SETTINGS FOR INTERACTIVE CONTROLS  ******
+
+    // gui.add(settings, 'time_speed', timeOptions).name("Tốc độ thời gian").onChange((value) => {
+    //     console.log("Giá trị thời gian (giây):", value);
+    //     // Cập nhật tốc độ thời gian tại đây, ví dụ:
+    //     // solarSystem.setTimeStep(value);
+    // });
+    // gui.add(settings, 'accelerationOrbit', 0, 10).onChange(value => {
+    // });
+    // gui.add(settings, 'acceleration', 0, 10).onChange(value => {
+    // });
+    // gui.add(settings, 'sunIntensity', 1, 10).onChange(value => {
+    // sunMat.emissiveIntensity = value;
+    // });
+
+   const pane = new Pane();
+    const PARAMS = {
+        percentage: 50,
+        theme: 'dark',
+      };
+      
+    // `min` and `max`: slider
+    pane.addBinding(
+    PARAMS, 'percentage',
+    {min: 0, max: 100, step: 10}
+    );
+    
+    // `options`: list
+    pane.addBinding(
+    PARAMS, 'theme',
+    {options: {Dark: 'dark', Light: 'light'}}
+    );
+
     // Camera
     const camera = GetCamera(0, 1, 100);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
     document.body.appendChild(renderer.domElement);
+
+
+    // Set z-index
+    renderer.domElement.style.position = 'absolute'; // cần thiết để z-index có tác dụng
+    renderer.domElement.style.zIndex = '0';
+    renderer.domElement.style.pointerEvents = 'all';
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+
 
     // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -84,9 +148,9 @@ const SolarSystem2 = () =>
     scene.add(lightAmbient);
 
     // ******  CONTROLS  ******
-    const gui = new dat.GUI({ autoPlace: false });
-    const customContainer = document.getElementById('gui-container');
-    customContainer.appendChild(gui.domElement);
+    // const gui = new dat.GUI({ autoPlace: false });
+    // const customContainer = document.getElementById('gui-container');
+    // customContainer.appendChild(gui.domElement);
 
     // mouse movement
     const raycaster = new THREE.Raycaster();
@@ -506,7 +570,7 @@ const SolarSystem2 = () =>
         let hours = Math.floor((count % 86400) / 3600);
         let minutes = Math.floor((count % 3600) / 60);
         let seconds = count % 60;
-        console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+        //console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
 
         SunAnimation();
         MercuryAnimation(deltaTime);
