@@ -82,23 +82,76 @@ const SolarSystem2 = () =>
     // sunMat.emissiveIntensity = value;
     // });
 
-   const pane = new Pane();
-    const PARAMS = {
-        percentage: 50,
-        theme: 'dark',
-      };
-      
-    // `min` and `max`: slider
-    pane.addBinding(
-    PARAMS, 'percentage',
-    {min: 0, max: 100, step: 10}
-    );
     
-    // `options`: list
-    pane.addBinding(
-    PARAMS, 'theme',
-    {options: {Dark: 'dark', Light: 'light'}}
-    );
+    const pane = new Pane();
+    const guiContainer = document.getElementById('gui-container');
+    guiContainer.appendChild(pane.element);
+    pane.addBinding(settings, 'accelerationOrbit', {min: 0, max: 10, step: 1});
+    pane.addBinding(settings, 'acceleration', {min: 0, max: 10, step: 1});
+    pane.addBinding(settings, 'sunIntensity', {min: 1, max: 10, step: 1});
+    const TIME_OPTIONS = {
+        '1s': 1,
+        '2s': 2,
+        '5s': 5,
+        '10s': 10,
+        '30s': 30,
+        '1m': 60,
+        '2m': 120,
+        '5m': 300,
+        '10m': 600,
+        '30m': 1800,
+        '1h': 3600,
+        '2h': 7200,
+        '3h': 10800,
+        '5h': 18000,
+        '12h': 43200,
+        '1d': 86400,
+        '2d': 172800,
+        '3d': 259200,
+        '1w': 604800,
+        '2w': 1209600,
+        '3w': 1814400,
+        '1mo': 2592000,      // 30 days
+        '2mo': 5184000,
+        '3mo': 7776000,
+        '6mo': 15552000,
+        '1y': 31536000,
+        '2y': 63072000,
+        '3y': 94608000,
+      };
+    pane.addBinding(settings, 'time_speed', 
+        {
+        options : {
+        '1s': 1,
+        '2s': 2,
+        '5s': 5,
+        '10s': 10,
+        '30s': 30,
+        '1m': 60,
+        '2m': 120,
+        '5m': 300,
+        '10m': 600,
+        '30m': 1800,
+        '1h': 3600,
+        '2h': 7200,
+        '3h': 10800,
+        '5h': 18000,
+        '12h': 43200,
+        '1d': 86400,
+        '2d': 172800,
+        '3d': 259200,
+        '1w': 604800,
+        '2w': 1209600,
+        '3w': 1814400,
+        '1mo': 2592000,      // 30 days
+        '2mo': 5184000,
+        '3mo': 7776000,
+        '6mo': 15552000,
+        '1y': 31536000,
+        '2y': 63072000,
+        '3y': 94608000,
+        }
+    });      
 
     // Camera
     const camera = GetCamera(0, 1, 100);
