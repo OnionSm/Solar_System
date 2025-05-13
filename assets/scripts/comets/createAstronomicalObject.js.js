@@ -1,12 +1,13 @@
 import * as THREE from "three"
 import CalculateFocalDistance from "../utils/calculateFocalDistance.js";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const loadTexture = new THREE.TextureLoader();
 
 const CreateAstronomicalObject = async (astronomical_object_name, size, distance_multiplier, model_path, tilt, texture, bump, ring, atmosphere, moons, scene, 
-  minor_axis, major_axis, min_distance, max_distance, orbit_color, orbit_opacity) =>
+  minor_axis, major_axis, min_distance, max_distance, orbit_color, orbit_opacity, inclination) =>
 {
-
+    const loader = new GLTFLoader();
     const gltf = await loader.loadAsync(model_path);
     const astronomical_object = gltf.scene;
 
@@ -33,11 +34,12 @@ const CreateAstronomicalObject = async (astronomical_object_name, size, distance
     const orbit_center = new THREE.Vector3(focalDistance, 0, 0);
     astronomical_object.position.x = max_distance * distance_multiplier;
 
-    const pathPoints = orbitPath.getPoints(100);
+    const pathPoints = orbitPath.getPoints(300);
     const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
     const orbitMaterial = new THREE.LineBasicMaterial({ color: orbit_color, transparent: true, opacity: orbit_opacity });
     const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
     orbit.rotation.x = Math.PI / 2;
+    // orbit.rotation.z = inclination; 
     astronomical_objectSystem.add(orbit);
 
     // Thêm vành đai (Ring)
@@ -97,8 +99,11 @@ const CreateAstronomicalObject = async (astronomical_object_name, size, distance
     // Thêm vào scene
     astronomical_object3d.add(astronomical_objectSystem);
     scene.add(astronomical_object3d);
+    
+    
+    astronomical_objectSystem.rotation.z = inclination;
 
-    return { name, astronomical_object, astronomical_object3d, Atmosphere, moons, astronomical_objectSystem, Ring, orbit_center, orbitMaterial };
+    return { name, astronomical_object, astronomical_object3d, Atmosphere, moons, astronomical_objectSystem, Ring, orbit_center, orbitMaterial};
 }
 
 export default CreateAstronomicalObject;

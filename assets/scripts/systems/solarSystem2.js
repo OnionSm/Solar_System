@@ -28,7 +28,9 @@ import CalculatePlanetPosition from '../utils/calculatePlanetPosition.js';
 import GetPlanetData from '../configs/planetData.js';
 import getTrueAnomalyAfterTime from '../utils/getAnomalyAngle.js';
 import { timerDelta } from 'three/tsl';
-const SolarSystem2 = () =>
+import GetCometSetting from '../configs/comet_configs.js';
+import CreateAstronomicalObject from '../comets/createAstronomicalObject.js';
+const SolarSystem2 = async () =>
 {
 
     
@@ -48,7 +50,7 @@ const SolarSystem2 = () =>
     // SETTING
     const settings = GetSetting();
     const planetSettings = GetPlanetSetting();
-
+    const cometSettings = GetCometSetting();
     
     const pane = new Pane();
     const guiContainer = document.getElementById('gui-container');
@@ -96,7 +98,6 @@ const SolarSystem2 = () =>
       
 
 
-
     pane.addBinding(settings, 'accelerationOrbit', {min: 0, max: 10, step: 1});
     pane.addBinding(settings, 'acceleration', {min: 0, max: 10, step: 1});
     pane.addBinding(settings, 'sunIntensity', {min: 0.1, max: 10, step: 0.1})
@@ -119,6 +120,8 @@ const SolarSystem2 = () =>
         jupiter.orbitMaterial.opacity = ev.value;
         saturn.orbitMaterial.opacity = ev.value;
         uranus.orbitMaterial.opacity = ev.value;
+        neptune.orbitMaterial.opacity = ev.value;
+        harley.orbitMaterial.opacity = ev.value;
     });
     // Thêm từng orbit color vào folder, dùng kiểu màu
     orbitColorFolder.addBinding(settings, 'mercury_orbit_color', { view: 'color' }).on('change', (ev) => {
@@ -360,14 +363,14 @@ const SolarSystem2 = () =>
     const neptune_settings = planetSettings[7];
 
     // PLANETS
-    const mercury = CreatePlanet('Mercury', 2.4, mercury_settings.distance_multiplier, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance, settings.mercury_orbit_color, settings.orbit_opacity);
-    const venus = CreatePlanet('Venus', 6.1, venus_settings.distance_multiplier, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance, settings.venus_orbit_color, settings.orbit_opacity);
+    const mercury = CreatePlanet('Mercury', 2.4, mercury_settings.distance_multiplier, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance, settings.mercury_orbit_color, settings.orbit_opacity, mercury_settings.inclination);
+    const venus = CreatePlanet('Venus', 6.1, venus_settings.distance_multiplier, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance, settings.venus_orbit_color, settings.orbit_opacity, venus_settings.inclination);
 
 
     const earth_material = GetEarthMaterial(new THREE.Vector3(0,0,0));
     const earth_moon = GetEarthMoon(settings.accelerationOrbit);
  
-    const earth = CreatePlanet('Earth', 6.4, earth_settings.distance_multiplier, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance, settings.earth_orbit_color, settings.orbit_opacity);
+    const earth = CreatePlanet('Earth', 6.4, earth_settings.distance_multiplier, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance, settings.earth_orbit_color, settings.orbit_opacity, earth_settings.inclination);
     const earth_satellites = GetEarthSatellite(settings.accelerationOrbit);
     earth_satellites.forEach(satellite => 
     {
@@ -387,7 +390,7 @@ const SolarSystem2 = () =>
     });
     
     
-    const mars = CreatePlanet('Mars', 3.4, mars_settings.distance_multiplier, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance, settings.mars_orbit_color, settings.orbit_opacity);
+    const mars = CreatePlanet('Mars', 3.4, mars_settings.distance_multiplier, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance, settings.mars_orbit_color, settings.orbit_opacity, mars_settings.inclination);
    
 
     const marsMoons = GetMarsMoon(settings.accelerationOrbit);
@@ -410,23 +413,27 @@ const SolarSystem2 = () =>
 
 
     const jupiterMoons = GetJupiterMoons(settings.accelerationOrbit);
-    const jupiter = CreatePlanet('Jupiter', 69/4, jupiter_settings.distance_multiplier, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance, settings.jupiter_orbit_color, settings.orbit_opacity);
+    const jupiter = CreatePlanet('Jupiter', 69/4, jupiter_settings.distance_multiplier, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance, settings.jupiter_orbit_color, settings.orbit_opacity, jupiter_settings.inclination);
 
 
-    const saturn = CreatePlanet('Saturn', 58/4, saturn_settings.distance_multiplier, 26, "assets/sprites/saturnmap.jpg", null, {
+    const saturn = CreatePlanet('Saturn', 58/4, saturn_settings.distance_multiplier, 26, "assets/sprites/saturnmap.jpg", null, { 
       innerRadius: 18, 
       outerRadius: 29, 
       texture: "assets/sprites/saturn_ring.png"
-    }, null, null, scene, saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.min_distance, saturn_settings.max_distance, settings.saturn_orbit_color, settings.orbit_opacity);
+    }, null, null, scene, saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.min_distance, saturn_settings.max_distance, settings.saturn_orbit_color, settings.orbit_opacity, saturn_settings.inclination);
 
 
     const uranus = CreatePlanet('Uranus', 25/4, uranus_settings.distance_multiplier, 82, "assets/sprites/uranus.jpg", null, {
       innerRadius: 6, 
       outerRadius: 8, 
       texture: "assets/sprites/uranus_ring.png"
-    }, null, null, scene, uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.min_distance, uranus_settings.max_distance, settings.uranus_orbit_color, settings.orbit_opacity);
+    }, null, null, scene, uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.min_distance, uranus_settings.max_distance, settings.uranus_orbit_color, settings.orbit_opacity, uranus_settings.inclination);
 
-    const neptune = CreatePlanet('Neptune', 24/4, neptune_settings.distance_multiplier, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance, settings.neptune_orbit_color, settings.orbit_opacity);
+    const neptune = CreatePlanet('Neptune', 24/4, neptune_settings.distance_multiplier, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance, settings.neptune_orbit_color, settings.orbit_opacity, neptune_settings.inclination);
+
+    // ------------- COMET --------------------------
+    const harley = await CreateAstronomicalObject('Harley', 0.1, cometSettings[0].distance_multiplier, "assets/scripts/models/moons/phobos.glb", 0, null, null, null, null, null, scene, cometSettings[0].minor_axis, cometSettings[0].major_axis, cometSettings[0].min_distance, cometSettings[0].max_distance, settings.harley_orbit_color, settings.orbit_opacity, cometSettings[0].inclination);
+
 
     //const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg", null, null, null, null, scene, pluto_settings.minor_axis, pluto_settings.major_axis, pluto_settings.min_distance, pluto_settings.max_distance  );
     
@@ -585,6 +592,19 @@ const SolarSystem2 = () =>
         neptune.planet.position.x = x;
         neptune.planet.position.z = y;
     }
+    function HarleyAnimation(deltaTime)
+    {
+        harley.astronomical_object.rotateY(cometSettings[0].self_rotation_angle * settings.time_speed * deltaTime);
+        let current_time = cometSettings[0].current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % cometSettings[0].seconds;
+        cometSettings[0].current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, cometSettings[0].seconds, cometSettings[0].eccentricity);
+        cometSettings[0].current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(cometSettings[0].minor_axis, cometSettings[0].major_axis, cometSettings[0].eccentricity, cometSettings[0].distance_multiplier, cometSettings[0].current_angle);
+        harley.astronomical_object.position.x = x;
+        harley.astronomical_object.position.z = y;
+        //console.log(harley.astronomical_object.position);
+    }
     let count = 0;
     function animate()
     {
@@ -624,7 +644,7 @@ const SolarSystem2 = () =>
         //neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
         // pluto.planet.rotateY(0.001 * settings.acceleration)
         // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
-        
+        HarleyAnimation(deltaTime); 
 
         // Animate Earth's moon
         if (earth.moons) {

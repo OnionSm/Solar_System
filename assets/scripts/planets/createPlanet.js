@@ -3,7 +3,7 @@ import CalculateFocalDistance from "../utils/calculateFocalDistance.js";
 
 const loadTexture = new THREE.TextureLoader();
 const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump, ring, atmosphere, moons, scene, 
-  minor_axis, major_axis, min_distance, max_distance, orbit_color, orbit_opacity) =>
+  minor_axis, major_axis, min_distance, max_distance, orbit_color, orbit_opacity, inclination) =>
 {
 
     let material;
@@ -58,14 +58,14 @@ const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump
     const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
     const orbitMaterial = new THREE.LineBasicMaterial({ color: orbit_color, transparent: true, opacity: orbit_opacity });
     const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
-    orbit.rotation.x = Math.PI / 2;
+    orbit.rotation.x = Math.PI / 2; 
     planetSystem.add(orbit);
     
   
     //add ring
     if(ring)
     {
-      const RingGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius,30);
+      const RingGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 30);
       const RingMat = new THREE.MeshStandardMaterial({
         map: loadTexture.load(ring.texture),
         side: THREE.DoubleSide
@@ -159,6 +159,9 @@ const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump
     //add planet system to planet3d object and to the scene
     planet3d.add(planetSystem);
     scene.add(planet3d);
+
+    planetSystem.rotation.z = inclination;
+    
     return {name, planet, planet3d, Atmosphere, moons, planetSystem, Ring, orbit_center, orbitMaterial};
   }
 

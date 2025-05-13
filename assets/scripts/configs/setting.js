@@ -13,7 +13,8 @@ const GetSetting = () =>
         saturn_orbit_color: 0xFFFFFF,
         uranus_orbit_color: 0xFFFFFF,
         neptune_orbit_color: 0xFFFFFF,
-        orbit_opacity: 0.03
+        harley_orbit_color: 0xFFFFFF,
+        orbit_opacity: 0.03,
     };
     return settings;
 }
