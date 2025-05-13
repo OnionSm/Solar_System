@@ -27,6 +27,7 @@ import GetPlanetSetting from '../configs/planet_configs.js';
 import CalculatePlanetPosition from '../utils/calculatePlanetPosition.js';
 import GetPlanetData from '../configs/planetData.js';
 import getTrueAnomalyAfterTime from '../utils/getAnomalyAngle.js';
+import { timerDelta } from 'three/tsl';
 const SolarSystem2 = () =>
 {
 
@@ -488,9 +489,7 @@ const SolarSystem2 = () =>
     }
     function MercuryAnimation(deltaTime)
     {
-        mercury.planet.rotateY(0.001 * settings.acceleration);
-        // const current_angle = mercury_settings.current_angle + (mercury_settings.angle_offset * settings.time_speed * deltaTime);
-        // mercury_settings.current_angle = current_angle;
+        mercury.planet.rotateY(mercury_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = mercury_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % mercury_settings.seconds;
         mercury_settings.current_time = current_time;
@@ -502,9 +501,7 @@ const SolarSystem2 = () =>
     }
     function VenusAnimation(deltaTime)
     {   
-        venus.planet.rotateY(0.0005 * settings.acceleration);
-        // const current_angle = venus_settings.current_angle + (venus_settings.angle_offset * settings.time_speed * deltaTime);
-        // venus_settings.current_angle = current_angle;
+        venus.planet.rotateY(venus_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = venus_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % venus_settings.seconds;
         venus_settings.current_time = current_time;
@@ -516,9 +513,7 @@ const SolarSystem2 = () =>
     }
     function EarthAnimation(deltaTime)
     {
-        earth.planet.rotateY(0.005 * settings.acceleration);
-        // const current_angle = earth_settings.current_angle + (earth_settings.angle_offset * settings.time_speed * deltaTime);
-        // earth_settings.current_angle = current_angle;
+        earth.planet.rotateY(earth_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = earth_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % earth_settings.seconds;
         earth_settings.current_time = current_time;
@@ -530,9 +525,7 @@ const SolarSystem2 = () =>
     }
     function MarsAnimation(deltaTime)
     {
-        mars.planet.rotateY(0.01 * settings.acceleration);
-        // const current_angle = mars_settings.current_angle + (mars_settings.angle_offset * settings.time_speed * deltaTime);
-        // mars_settings.current_angle = current_angle;
+        mars.planet.rotateY(mars_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = mars_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % mars_settings.seconds;
         mars_settings.current_time = current_time;
@@ -544,9 +537,7 @@ const SolarSystem2 = () =>
     }
     function JupiterAnimation(deltaTime)
     {
-        jupiter.planet.rotateY(0.005 * settings.acceleration);
-        // const current_angle = jupiter_settings.current_angle + (jupiter_settings.angle_offset * settings.time_speed * deltaTime);
-        // jupiter_settings.current_angle = current_angle;
+        jupiter.planet.rotateY(jupiter_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = jupiter_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % jupiter_settings.seconds;
         jupiter_settings.current_time = current_time;
@@ -558,9 +549,7 @@ const SolarSystem2 = () =>
     }
     function SaturnAnimation(deltaTime)
     {
-        saturn.planet.rotateY(0.01 * settings.acceleration);
-        // const current_angle = saturn_settings.current_angle + (saturn_settings.angle_offset * settings.time_speed * deltaTime);
-        // saturn_settings.current_angle = current_angle;
+        saturn.planet.rotateY(saturn_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = saturn_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % saturn_settings.seconds;
         saturn_settings.current_time = current_time;
@@ -574,9 +563,7 @@ const SolarSystem2 = () =>
     }
     function UranusAnimation(deltaTime)
     {
-        uranus.planet.rotateY(0.005 * settings.acceleration);
-        // const current_angle = uranus_settings.current_angle + (uranus_settings.angle_offset * settings.time_speed * deltaTime);
-        // uranus_settings.current_angle = current_angle;
+        uranus.planet.rotateY(uranus_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = uranus_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % uranus_settings.seconds;
         uranus_settings.current_time = current_time;
@@ -588,9 +575,7 @@ const SolarSystem2 = () =>
     }
     function NeptuneAnimation(deltaTime)
     {
-        neptune.planet.rotateY(0.005 * settings.acceleration);
-        // const current_angle = neptune_settings.current_angle + (neptune_settings.angle_offset * settings.time_speed * deltaTime);
-        // neptune_settings.current_angle = current_angle;
+        neptune.planet.rotateY(neptune_settings.self_rotation_angle * settings.time_speed * deltaTime);
         let current_time = neptune_settings.current_time + (settings.time_speed * deltaTime);
         current_time = current_time % neptune_settings.seconds;
         neptune_settings.current_time = current_time;
@@ -611,11 +596,11 @@ const SolarSystem2 = () =>
         // {
         //     sun_config[0].mesh.rotateY(0.001 * settings.acceleration);
         // }
-        count += (deltaTime * settings.time_speed);
-        let days = Math.floor(count / 86400);
-        let hours = Math.floor((count % 86400) / 3600);
-        let minutes = Math.floor((count % 3600) / 60);
-        let seconds = count % 60;
+        // count += (deltaTime * settings.time_speed);
+        // let days = Math.floor(count / 86400);
+        // let hours = Math.floor((count % 86400) / 3600);
+        // let minutes = Math.floor((count % 3600) / 60);
+        // let seconds = count % 60;
         //console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
 
         SunAnimation();
