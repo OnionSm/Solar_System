@@ -30,6 +30,7 @@ import getTrueAnomalyAfterTime from '../utils/getAnomalyAngle.js';
 import { timerDelta } from 'three/tsl';
 import GetCometSetting from '../configs/comet_configs.js';
 import CreateAstronomicalObject from '../comets/createAstronomicalObject.js';
+import GetSatelliteSetting from '../configs/satellite_configs.js';
 const SolarSystem2 = async () =>
 {
 
@@ -51,6 +52,7 @@ const SolarSystem2 = async () =>
     const settings = GetSetting();
     const planetSettings = GetPlanetSetting();
     const cometSettings = GetCometSetting();
+    const satelliteSettings = GetSatelliteSetting();
     
     const pane = new Pane();
     const guiContainer = document.getElementById('gui-container');
@@ -339,7 +341,7 @@ const SolarSystem2 = async () =>
 
     // console.log(sun_config[0].mesh);
     
-    const {sun, sunMat} = GetSun(697/80, settings.sunIntensity);
+    const {sun, sunMat} = GetSun(697/200, settings.sunIntensity);
     scene.add(sun);
 
 
@@ -434,6 +436,9 @@ const SolarSystem2 = async () =>
     // ------------- COMET --------------------------
     const harley = await CreateAstronomicalObject('Harley', 0.1, cometSettings[0].distance_multiplier, "assets/scripts/models/moons/phobos.glb", 0, null, null, null, null, null, scene, cometSettings[0].minor_axis, cometSettings[0].major_axis, cometSettings[0].min_distance, cometSettings[0].max_distance, settings.harley_orbit_color, settings.orbit_opacity, cometSettings[0].inclination);
 
+    // ------------- SATELLITE --------------------------
+    const parkerSolarProbe = await CreateAstronomicalObject('Parker Solar Probe', 0.1, satelliteSettings[0].distance_multiplier, "assets/models/PSP.glb", 0, null, null, null, null, null, scene, satelliteSettings[0].minor_axis, satelliteSettings[0].major_axis, satelliteSettings[0].min_distance, satelliteSettings[0].max_distance, settings.parker_orbit_color, settings.orbit_opacity, satelliteSettings[0].inclination);
+    const lucy = await CreateAstronomicalObject('Lucy', 1, satelliteSettings[1].distance_multiplier, "assets/models/lucy__nasa_space_probe__free_download.glb", 0, null, null, null, null, null, scene, satelliteSettings[1].minor_axis, satelliteSettings[1].major_axis, satelliteSettings[1].min_distance, satelliteSettings[1].max_distance, settings.lucy_orbit_color, settings.orbit_opacity, satelliteSettings[1].inclination);
 
     //const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg", null, null, null, null, scene, pluto_settings.minor_axis, pluto_settings.major_axis, pluto_settings.min_distance, pluto_settings.max_distance  );
     
@@ -605,6 +610,30 @@ const SolarSystem2 = async () =>
         harley.astronomical_object.position.z = y;
         //console.log(harley.astronomical_object.position);
     }
+    function ParkerSolarProbeAnimation(deltaTime)
+    {
+        parkerSolarProbe.astronomical_object.rotateY(satelliteSettings[0].self_rotation_angle * settings.time_speed * deltaTime);
+        let current_time = satelliteSettings[0].current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % satelliteSettings[0].seconds;
+        satelliteSettings[0].current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, satelliteSettings[0].seconds, satelliteSettings[0].eccentricity);
+        satelliteSettings[0].current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(satelliteSettings[0].minor_axis, satelliteSettings[0].major_axis, satelliteSettings[0].eccentricity, satelliteSettings[0].distance_multiplier, satelliteSettings[0].current_angle);
+        parkerSolarProbe.astronomical_object.position.x = x;
+        parkerSolarProbe.astronomical_object.position.z = y;
+    }
+    function LucyAnimation(deltaTime)
+    {
+        lucy.astronomical_object.rotateY(satelliteSettings[1].self_rotation_angle * settings.time_speed * deltaTime);
+        let current_time = satelliteSettings[1].current_time + (settings.time_speed * deltaTime);
+        current_time = current_time % satelliteSettings[1].seconds;
+        satelliteSettings[1].current_time = current_time;
+        const true_anomaly = getTrueAnomalyAfterTime(current_time, satelliteSettings[1].seconds, satelliteSettings[1].eccentricity);
+        satelliteSettings[1].current_angle = true_anomaly;
+        const {x,y} = CalculatePlanetPosition(satelliteSettings[1].minor_axis, satelliteSettings[1].major_axis, satelliteSettings[1].eccentricity, satelliteSettings[1].distance_multiplier, satelliteSettings[1].current_angle);
+        lucy.astronomical_object.position.x = x;
+        lucy.astronomical_object.position.z = y;
+    }
     let count = 0;
     function animate()
     {
@@ -645,7 +674,8 @@ const SolarSystem2 = async () =>
         // pluto.planet.rotateY(0.001 * settings.acceleration)
         // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
         HarleyAnimation(deltaTime); 
-
+        ParkerSolarProbeAnimation(deltaTime);
+        LucyAnimation(deltaTime);
         // Animate Earth's moon
         if (earth.moons) {
         earth.moons.forEach(moon => {

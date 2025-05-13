@@ -4,7 +4,7 @@ const GetSetting = () =>
         accelerationOrbit: 1,
         acceleration: 1,
         sunIntensity: 1.5,
-        time_speed: 1,
+        time_speed: 86400,
         mercury_orbit_color: 0xFFFFFF,
         venus_orbit_color: 0xFFFFFF,
         earth_orbit_color: 0xFFFFFF,
@@ -14,6 +14,7 @@ const GetSetting = () =>
         uranus_orbit_color: 0xFFFFFF,
         neptune_orbit_color: 0xFFFFFF,
         harley_orbit_color: 0xFFFFFF,
+        parker_orbit_color: 0xFFFFFF,
         orbit_opacity: 0.03,
     };
     return settings;
