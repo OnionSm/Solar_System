@@ -3,7 +3,7 @@ import CalculateFocalDistance from "../utils/calculateFocalDistance.js";
 
 const loadTexture = new THREE.TextureLoader();
 const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump, ring, atmosphere, moons, scene, 
-  minor_axis, major_axis, min_distance, max_distance) =>
+  minor_axis, major_axis, min_distance, max_distance, orbit_color, orbit_opacity) =>
 {
 
     let material;
@@ -56,7 +56,7 @@ const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump
   
     const pathPoints = orbitPath.getPoints(100);
     const orbitGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
-    const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.03 });
+    const orbitMaterial = new THREE.LineBasicMaterial({ color: orbit_color, transparent: true, opacity: orbit_opacity });
     const orbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
     orbit.rotation.x = Math.PI / 2;
     planetSystem.add(orbit);
@@ -159,7 +159,7 @@ const CreatePlanet = (planetName, size, distance_multiplier, tilt, texture, bump
     //add planet system to planet3d object and to the scene
     planet3d.add(planetSystem);
     scene.add(planet3d);
-    return {name, planet, planet3d, Atmosphere, moons, planetSystem, Ring, orbit_center};
+    return {name, planet, planet3d, Atmosphere, moons, planetSystem, Ring, orbit_center, orbitMaterial};
   }
 
 export default CreatePlanet;

@@ -48,111 +48,104 @@ const SolarSystem2 = () =>
     const settings = GetSetting();
     const planetSettings = GetPlanetSetting();
 
-    // const gui = new dat.GUI({ autoPlace: false });
-    // const customContainer = document.getElementById('gui-container');
-    // customContainer.appendChild(gui.domElement);
-
-    // const timeOptions = {
-    //     "1 giây": 1,
-    //     "2 giây": 2,
-    //     "5 giây": 5,
-    //     "1 phút": 60,
-    //     "30 phút": 1800,
-    //     "1 giờ": 3600,
-    //     "2 giờ": 7200,
-    //     "3 giờ": 10800,
-    //     "12 giờ": 43200,
-    //     "1 ngày": 86400
-    //   };
-    
-    //   // Thêm dropdown vào GUI
-    
-    // // ****** SETTINGS FOR INTERACTIVE CONTROLS  ******
-
-    // gui.add(settings, 'time_speed', timeOptions).name("Tốc độ thời gian").onChange((value) => {
-    //     console.log("Giá trị thời gian (giây):", value);
-    //     // Cập nhật tốc độ thời gian tại đây, ví dụ:
-    //     // solarSystem.setTimeStep(value);
-    // });
-    // gui.add(settings, 'accelerationOrbit', 0, 10).onChange(value => {
-    // });
-    // gui.add(settings, 'acceleration', 0, 10).onChange(value => {
-    // });
-    // gui.add(settings, 'sunIntensity', 1, 10).onChange(value => {
-    // sunMat.emissiveIntensity = value;
-    // });
-
     
     const pane = new Pane();
     const guiContainer = document.getElementById('gui-container');
     guiContainer.appendChild(pane.element);
+    
+
+    function formatDuration(seconds) {
+        const units = [
+          { label: 'năm', seconds: 31536000 },
+          { label: 'tháng', seconds: 2592000 },
+          { label: 'tuần', seconds: 604800 },
+          { label: 'ngày', seconds: 86400 },
+          { label: 'giờ', seconds: 3600 },
+          { label: 'phút', seconds: 60 },
+          { label: 'giây', seconds: 1 },
+        ];
+      
+        let result = '';
+        for (const unit of units) {
+          const value = Math.floor(seconds / unit.seconds);
+          if (value > 0) {
+            result += `${value} ${unit.label} `;
+            seconds %= unit.seconds;
+          }
+        }
+        return result.trim();
+      }
+    const PARAMS = {
+        time: '1 giây',
+      };
+      
+    pane.addBinding(PARAMS, 'time', {
+    readonly: true,
+    interval: 1000,
+    });
+
+    pane.addBinding(settings, 'time_speed', {
+        label: 'Time Speed',
+        min: 1,
+        max: 94608000,
+        step: 1,
+      }).on('change', (ev) => {
+        PARAMS.time = formatDuration(ev.value);
+      });
+      
+
+
+
     pane.addBinding(settings, 'accelerationOrbit', {min: 0, max: 10, step: 1});
     pane.addBinding(settings, 'acceleration', {min: 0, max: 10, step: 1});
-    pane.addBinding(settings, 'sunIntensity', {min: 1, max: 10, step: 1});
-    const TIME_OPTIONS = {
-        '1s': 1,
-        '2s': 2,
-        '5s': 5,
-        '10s': 10,
-        '30s': 30,
-        '1m': 60,
-        '2m': 120,
-        '5m': 300,
-        '10m': 600,
-        '30m': 1800,
-        '1h': 3600,
-        '2h': 7200,
-        '3h': 10800,
-        '5h': 18000,
-        '12h': 43200,
-        '1d': 86400,
-        '2d': 172800,
-        '3d': 259200,
-        '1w': 604800,
-        '2w': 1209600,
-        '3w': 1814400,
-        '1mo': 2592000,      // 30 days
-        '2mo': 5184000,
-        '3mo': 7776000,
-        '6mo': 15552000,
-        '1y': 31536000,
-        '2y': 63072000,
-        '3y': 94608000,
-      };
-    pane.addBinding(settings, 'time_speed', 
-        {
-        options : {
-        '1s': 1,
-        '2s': 2,
-        '5s': 5,
-        '10s': 10,
-        '30s': 30,
-        '1m': 60,
-        '2m': 120,
-        '5m': 300,
-        '10m': 600,
-        '30m': 1800,
-        '1h': 3600,
-        '2h': 7200,
-        '3h': 10800,
-        '5h': 18000,
-        '12h': 43200,
-        '1d': 86400,
-        '2d': 172800,
-        '3d': 259200,
-        '1w': 604800,
-        '2w': 1209600,
-        '3w': 1814400,
-        '1mo': 2592000,      // 30 days
-        '2mo': 5184000,
-        '3mo': 7776000,
-        '6mo': 15552000,
-        '1y': 31536000,
-        '2y': 63072000,
-        '3y': 94608000,
-        }
-    });      
+    pane.addBinding(settings, 'sunIntensity', {min: 0.1, max: 10, step: 0.1})
+    .on('change', (ev) => {
+        sunMat.emissiveIntensity = ev.value;
+    });
 
+    
+    
+    // Tạo folder "Planet Orbit Colors"
+    const orbitColorFolder = pane.addFolder({
+        title: 'Planet Orbit Colors',
+        expanded: true,
+    });
+    orbitColorFolder.addBinding(settings, 'orbit_opacity', {min: 0, max: 0.1, step: 0.01}).on('change', (ev) => {
+        mercury.orbitMaterial.opacity = ev.value;
+        venus.orbitMaterial.opacity = ev.value;
+        earth.orbitMaterial.opacity = ev.value;
+        mars.orbitMaterial.opacity = ev.value;
+        jupiter.orbitMaterial.opacity = ev.value;
+        saturn.orbitMaterial.opacity = ev.value;
+        uranus.orbitMaterial.opacity = ev.value;
+    });
+    // Thêm từng orbit color vào folder, dùng kiểu màu
+    orbitColorFolder.addBinding(settings, 'mercury_orbit_color', { view: 'color' }).on('change', (ev) => {
+        mercury.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'venus_orbit_color', { view: 'color' }).on('change', (ev) => {
+        venus.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'earth_orbit_color', { view: 'color' }).on('change', (ev) => {
+        earth.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'mars_orbit_color', { view: 'color' }).on('change', (ev) => {
+        mars.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'jupiter_orbit_color', { view: 'color' }).on('change', (ev) => {
+        jupiter.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'saturn_orbit_color', { view: 'color' }).on('change', (ev) => {
+        saturn.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'uranus_orbit_color', { view: 'color' }).on('change', (ev) => {
+        uranus.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    orbitColorFolder.addBinding(settings, 'neptune_orbit_color', { view: 'color' }).on('change', (ev) => {
+        neptune.orbitMaterial.color = new THREE.Color(ev.value);
+    });
+    
+        
     // Camera
     const camera = GetCamera(0, 1, 100);
 
@@ -269,20 +262,20 @@ const SolarSystem2 = () =>
     let isZoomingOut = false;
     let zoomOutTargetPosition = new THREE.Vector3(-175, 115, 5);
     // close 'x' button function
-    function closeInfo() {
-        var info = document.getElementById('planetInfo');
-        info.style.display = 'none';
-        settings.accelerationOrbit = 1;
-        isZoomingOut = true;
-        controls.target.set(0, 0, 0);
-    }
-    window.closeInfo = closeInfo;
+    // function closeInfo() {
+    //     var info = document.getElementById('planetInfo');
+    //     info.style.display = 'none';
+    //     settings.accelerationOrbit = 1;
+    //     isZoomingOut = true;
+    //     controls.target.set(0, 0, 0);
+    // }
+    // window.closeInfo = closeInfo;
     // close info when clicking another planet
-    function closeInfoNoZoomOut() {
-        var info = document.getElementById('planetInfo');
-        info.style.display = 'none';
-        settings.accelerationOrbit = 1;
-    }
+    // function closeInfoNoZoomOut() {
+    //     var info = document.getElementById('planetInfo');
+    //     info.style.display = 'none';
+    //     settings.accelerationOrbit = 1;
+    // }
 
     const identifyPlanet = (clickedObject) => {
         // Logic to identify which planet was clicked based on the clicked object, different offset for camera distance
@@ -342,7 +335,7 @@ const SolarSystem2 = () =>
 
     // console.log(sun_config[0].mesh);
     
-    const sun= GetSun(697/80, settings.sunIntensity);
+    const {sun, sunMat} = GetSun(697/80, settings.sunIntensity);
     scene.add(sun);
 
 
@@ -366,14 +359,14 @@ const SolarSystem2 = () =>
     const neptune_settings = planetSettings[7];
 
     // PLANETS
-    const mercury = CreatePlanet('Mercury', 2.4, mercury_settings.distance_multiplier, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance);
-    const venus = CreatePlanet('Venus', 6.1, venus_settings.distance_multiplier, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance);
+    const mercury = CreatePlanet('Mercury', 2.4, mercury_settings.distance_multiplier, 0, "assets/sprites/mercury.jpg", "assets/sprites/mercurybump.jpg", null, null, null, scene, mercury_settings.minor_axis, mercury_settings.major_axis, mercury_settings.min_distance, mercury_settings.max_distance, settings.mercury_orbit_color, settings.orbit_opacity);
+    const venus = CreatePlanet('Venus', 6.1, venus_settings.distance_multiplier, 3, "assets/sprites/venusmap.jpg", "assets/sprites/venusbump.jpg", null, "assets/sprites/venus_atmosphere.jpg", null, scene, venus_settings.minor_axis, venus_settings.major_axis, venus_settings.min_distance, venus_settings.max_distance, settings.venus_orbit_color, settings.orbit_opacity);
 
 
     const earth_material = GetEarthMaterial(new THREE.Vector3(0,0,0));
     const earth_moon = GetEarthMoon(settings.accelerationOrbit);
  
-    const earth = CreatePlanet('Earth', 6.4, earth_settings.distance_multiplier, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance);
+    const earth = CreatePlanet('Earth', 6.4, earth_settings.distance_multiplier, 23, earth_material, null, null, "assets/sprites/earth_atmosphere.jpg" , earth_moon, scene, earth_settings.minor_axis, earth_settings.major_axis, earth_settings.min_distance, earth_settings.max_distance, settings.earth_orbit_color, settings.orbit_opacity);
     const earth_satellites = GetEarthSatellite(settings.accelerationOrbit);
     earth_satellites.forEach(satellite => 
     {
@@ -393,7 +386,7 @@ const SolarSystem2 = () =>
     });
     
     
-    const mars = CreatePlanet('Mars', 3.4, mars_settings.distance_multiplier, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance);
+    const mars = CreatePlanet('Mars', 3.4, mars_settings.distance_multiplier, 25, "assets/sprites/marsmap.jpg", "assets/sprites/marsbump.jpg", null,null, null, scene, mars_settings.minor_axis, mars_settings.major_axis, mars_settings.min_distance, mars_settings.max_distance, settings.mars_orbit_color, settings.orbit_opacity);
    
 
     const marsMoons = GetMarsMoon(settings.accelerationOrbit);
@@ -416,23 +409,23 @@ const SolarSystem2 = () =>
 
 
     const jupiterMoons = GetJupiterMoons(settings.accelerationOrbit);
-    const jupiter = CreatePlanet('Jupiter', 69/4, jupiter_settings.distance_multiplier, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance);
+    const jupiter = CreatePlanet('Jupiter', 69/4, jupiter_settings.distance_multiplier, 3, "assets/sprites/jupiter.jpg", null, null, null, jupiterMoons, scene, jupiter_settings.minor_axis, jupiter_settings.major_axis, jupiter_settings.min_distance, jupiter_settings.max_distance, settings.jupiter_orbit_color, settings.orbit_opacity);
 
 
     const saturn = CreatePlanet('Saturn', 58/4, saturn_settings.distance_multiplier, 26, "assets/sprites/saturnmap.jpg", null, {
       innerRadius: 18, 
       outerRadius: 29, 
       texture: "assets/sprites/saturn_ring.png"
-    }, null, null, scene, saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.min_distance, saturn_settings.max_distance);
+    }, null, null, scene, saturn_settings.minor_axis, saturn_settings.major_axis, saturn_settings.min_distance, saturn_settings.max_distance, settings.saturn_orbit_color, settings.orbit_opacity);
 
 
     const uranus = CreatePlanet('Uranus', 25/4, uranus_settings.distance_multiplier, 82, "assets/sprites/uranus.jpg", null, {
       innerRadius: 6, 
       outerRadius: 8, 
       texture: "assets/sprites/uranus_ring.png"
-    }, null, null, scene, uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.min_distance, uranus_settings.max_distance);
+    }, null, null, scene, uranus_settings.minor_axis, uranus_settings.major_axis, uranus_settings.min_distance, uranus_settings.max_distance, settings.uranus_orbit_color, settings.orbit_opacity);
 
-    const neptune = CreatePlanet('Neptune', 24/4, neptune_settings.distance_multiplier, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance);
+    const neptune = CreatePlanet('Neptune', 24/4, neptune_settings.distance_multiplier, 28, "assets/sprites/neptune.jpg", null, null, null, null, scene, neptune_settings.minor_axis, neptune_settings.major_axis, neptune_settings.min_distance, neptune_settings.max_distance, settings.neptune_orbit_color, settings.orbit_opacity);
 
     //const pluto = CreatePlanet('Pluto', 1, 350, 57, "assets/sprites/plutomap.jpg", null, null, null, null, scene, pluto_settings.minor_axis, pluto_settings.major_axis, pluto_settings.min_distance, pluto_settings.max_distance  );
     

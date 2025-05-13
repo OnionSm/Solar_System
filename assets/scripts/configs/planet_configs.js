@@ -20,6 +20,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 5068800
     },
     {
         name: "Venus",
@@ -40,6 +41,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 20995200
     },
     {
         name: "Earth",
@@ -60,6 +62,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 86400
     },
     {
         name: "Mars",
@@ -80,6 +83,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 90000
     },
     {
         name: "Jupiter",    
@@ -100,6 +104,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 36000
     },
     {
         name: "Saturn",
@@ -119,6 +124,7 @@ const GetPlanetSetting = () =>
         angle_offset: 0.00000000676,
         current_angle: Math.PI,
         current_time: 0,
+        synotic_rotation_period: 39600
     },
     {
         name: "Uranus",
@@ -139,6 +145,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 61200
     },
     {
         name: "Neptune",    
@@ -159,6 +166,7 @@ const GetPlanetSetting = () =>
         current_angle: Math.PI,
         orbit_center: new THREE.Vector3(0,0,0),
         current_time: 0,
+        synotic_rotation_period: 57600
     }
     ];
     return settings;

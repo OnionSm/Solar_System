@@ -16,7 +16,7 @@ const GetSun = (radius = 5, sunIntensity) =>
     //const material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } ); 
     const sun = new THREE.Mesh(sunGeom, sunMat);
 
-    return sun;
+    return {sun, sunMat};
 }
 
 export default GetSun;
