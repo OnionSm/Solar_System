@@ -266,56 +266,53 @@ const SolarSystem2 = async () =>
         info.style.display = 'block';
     }
     let isZoomingOut = false;
-    let zoomOutTargetPosition = new THREE.Vector3(-175, 115, 5);
+    let zoomOutTargetPosition = new THREE.Vector3(-200, 70, 10);
     // close 'x' button function
-    // function closeInfo() {
-    //     var info = document.getElementById('planetInfo');
-    //     info.style.display = 'none';
-    //     settings.accelerationOrbit = 1;
-    //     isZoomingOut = true;
-    //     controls.target.set(0, 0, 0);
-    // }
-    // window.closeInfo = closeInfo;
+    function closeInfo() {
+        var info = document.getElementById('planetInfo');
+        info.style.display = 'none';
+        settings.accelerationOrbit = 1;
+        isZoomingOut = true;
+        selectedPlanet = null; // Clear selected planet
+        controls.target.set(0, 0, 0);
+    }
+    window.closeInfo = closeInfo;
     // close info when clicking another planet
-    // function closeInfoNoZoomOut() {
-    //     var info = document.getElementById('planetInfo');
-    //     info.style.display = 'none';
-    //     settings.accelerationOrbit = 1;
-    // }
+    function closeInfoNoZoomOut() {
+        var info = document.getElementById('planetInfo');
+        info.style.display = 'none';
+        settings.accelerationOrbit = 1;
+    }
 
     const identifyPlanet = (clickedObject) => {
         // Logic to identify which planet was clicked based on the clicked object, different offset for camera distance
-              if (clickedObject.material === mercury.planet.material) {
-                offset = 10;
-                return mercury;
-              } else if (clickedObject.material === venus.Atmosphere.material) {
-                offset = 25;
-                return venus;
-              } else if (clickedObject.material === earth.Atmosphere.material) {
-                offset = 25;
-                return earth;
-              } else if (clickedObject.material === mars.planet.material) {
-                offset = 15;
-                return mars;
-              } else if (clickedObject.material === jupiter.planet.material) {
-                offset = 50;
-                return jupiter;
-              } else if (clickedObject.material === saturn.planet.material) {
-                offset = 50;
-                return saturn;
-              } else if (clickedObject.material === uranus.planet.material) {
-                offset = 25;
-                return uranus;
-              } else if (clickedObject.material === neptune.planet.material) {
-                offset = 20;
-                return neptune;
-              } else if (clickedObject.material === pluto.planet.material) {
-                offset = 10;
-                return pluto;
-              } 
-      
+        if (clickedObject === mercury.planet || clickedObject === mercury.Atmosphere) {
+            offset = 10;
+            return mercury;
+        } else if (clickedObject === venus.planet || clickedObject === venus.Atmosphere) {
+            offset = 25;
+            return venus;
+        } else if (clickedObject === earth.planet || clickedObject === earth.Atmosphere) {
+            offset = 25;
+            return earth;
+        } else if (clickedObject === mars.planet || clickedObject === mars.Atmosphere) {
+            offset = 15;
+            return mars;
+        } else if (clickedObject === jupiter.planet || clickedObject === jupiter.Atmosphere) {
+            offset = 50;
+            return jupiter;
+        } else if (clickedObject === saturn.planet || clickedObject === saturn.Atmosphere) {
+            offset = 50;
+            return saturn;
+        } else if (clickedObject === uranus.planet || clickedObject === uranus.Atmosphere) {
+            offset = 25;
+            return uranus;
+        } else if (clickedObject === neptune.planet || clickedObject === neptune.Atmosphere) {
+            offset = 20;
+            return neptune;
+        }
         return null;
-      }
+    }
 
 
 
@@ -634,48 +631,58 @@ const SolarSystem2 = async () =>
         lucy.astronomical_object.position.x = x;
         lucy.astronomical_object.position.z = y;
     }
+    function updateCameraPosition() {
+        if (selectedPlanet && !isZoomingOut) {
+            const planetPosition = new THREE.Vector3();
+            selectedPlanet.planet.getWorldPosition(planetPosition);
+            controls.target.copy(planetPosition);
+            targetCameraPosition.copy(planetPosition).add(camera.position.clone().sub(planetPosition).normalize().multiplyScalar(offset));
+        }
+    }
+
     let count = 0;
     function animate()
     {
         const deltaTime = clock.getDelta();
-        //stats.begin();
         
-        //rotating planets around the sun and itself
-        // if(sun_config[0].mesh != null)
-        // {
-        //     sun_config[0].mesh.rotateY(0.001 * settings.acceleration);
-        // }
-        // count += (deltaTime * settings.time_speed);
-        // let days = Math.floor(count / 86400);
-        // let hours = Math.floor((count % 86400) / 3600);
-        // let minutes = Math.floor((count % 3600) / 60);
-        // let seconds = count % 60;
-        //console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-
         SunAnimation();
         MercuryAnimation(deltaTime);
-        //mercury.planet3d.rotateY(0.004 * settings.accelerationOrbit);
         VenusAnimation(deltaTime);
         venus.Atmosphere.rotateY(0.0005 * settings.acceleration);
-        //venus.planet3d.rotateY(0.0006 * settings.accelerationOrbit);
         EarthAnimation(deltaTime);
         earth.Atmosphere.rotateY(0.001 * settings.acceleration);
-        //earth.planet3d.rotateY(0.001 * settings.accelerationOrbit);
         MarsAnimation(deltaTime);
-        //mars.planet3d.rotateY(0.0007 * settings.accelerationOrbit);
         JupiterAnimation(deltaTime);
-        //jupiter.planet3d.rotateY(0.0003 * settings.accelerationOrbit);
         SaturnAnimation(deltaTime);
-        //saturn.planet3d.rotateY(0.0002 * settings.accelerationOrbit);
         UranusAnimation(deltaTime);
-        //uranus.planet3d.rotateY(0.0001 * settings.accelerationOrbit);
         NeptuneAnimation(deltaTime);
-        //neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
-        // pluto.planet.rotateY(0.001 * settings.acceleration)
-        // pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
         HarleyAnimation(deltaTime); 
         ParkerSolarProbeAnimation(deltaTime);
         LucyAnimation(deltaTime);
+
+        // camera follow selected planet
+        if (selectedPlanet && !isZoomingOut) {
+            const planetPosition = new THREE.Vector3();
+            selectedPlanet.planet.getWorldPosition(planetPosition);
+            controls.target.copy(planetPosition);
+            targetCameraPosition.copy(planetPosition).add(camera.position.clone().sub(planetPosition).normalize().multiplyScalar(offset));
+            camera.position.lerp(targetCameraPosition, 0.03);
+        }
+
+        // ******  ZOOM IN/OUT  ******
+        if (isMovingTowardsPlanet) {
+            camera.position.lerp(targetCameraPosition, 0.03);
+            if (camera.position.distanceTo(targetCameraPosition) < 1) {
+                isMovingTowardsPlanet = false;
+                showPlanetInfo(selectedPlanet.name);
+            }
+        } else if (isZoomingOut) {
+            camera.position.lerp(zoomOutTargetPosition, 0.05);
+            if (camera.position.distanceTo(zoomOutTargetPosition) < 1) {
+                isZoomingOut = false;
+            }
+        }
+
         // Animate Earth's moon
         if (earth.moons) {
         earth.moons.forEach(moon => {
@@ -766,26 +773,7 @@ const SolarSystem2 = async () =>
             outlinePass.selectedObjects = [intersectedObject];
         }
         }
-        // ******  ZOOM IN/OUT  ******
-        if (isMovingTowardsPlanet) {
-        // Smoothly move the camera towards the target position
-        camera.position.lerp(targetCameraPosition, 0.03);
-
-        // Check if the camera is close to the target position
-        if (camera.position.distanceTo(targetCameraPosition) < 1) {
-            isMovingTowardsPlanet = false;
-            showPlanetInfo(selectedPlanet.name);
-
-        }
-        } else if (isZoomingOut) {
-        camera.position.lerp(zoomOutTargetPosition, 0.05);
-
-        if (camera.position.distanceTo(zoomOutTargetPosition) < 1) {
-            isZoomingOut = false;
-        }
-        }
         stats.end();
-        //stats.end();
 
         controls.update();
         requestAnimationFrame(animate);
