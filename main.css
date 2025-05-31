@@ -77,6 +77,10 @@
 .info-value {
     color: #fff;
     font-weight: 400;
+    text-align: right;
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
 }
 
 .planet-description {
