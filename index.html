@@ -6,6 +6,102 @@
     <title>Solar System</title>
     <link rel="stylesheet" href="./main.css">
     <link rel="stylesheet" href="./css/slider_css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .planet-info {
+            display: none;
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(40, 40, 40, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            width: 350px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .planet-info-content {
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(70, 55, 55, 0.1);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            /*transition: all 0.3s ease;*/
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        #planetName {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a9eff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #planetDetails {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-label {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: 400;
+        }
+
+        .planet-description {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .planet-description p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #ccc;
+            margin: 0;
+        }
+    </style>
     <!-- <style>
         #gui-container {
             position: absolute;
@@ -25,13 +121,13 @@
  
 
     <div><script type="module" src="./main.js"></script></div>
-    <!-- <div id="planetInfo" class="planet-info">
+    <div id="planetInfo" class="planet-info">
         <div class="planet-info-content">
             <span class="close-btn" onclick="closeInfo()">&times;</span>
             <h2 id="planetName"></h2>
             <p id="planetDetails"></p>
         </div>
-    </div> -->
+    </div>
    
 </body>
 </html>
