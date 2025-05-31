@@ -31,6 +31,8 @@ import { timerDelta } from 'three/tsl';
 import GetCometSetting from '../configs/comet_configs.js';
 import CreateAstronomicalObject from '../comets/createAstronomicalObject.js';
 import GetSatelliteSetting from '../configs/satellite_configs.js';
+import MeteorShower from '../effects/meteorShower.js';
+
 const SolarSystem2 = async () =>
 {
 
@@ -43,8 +45,8 @@ const SolarSystem2 = async () =>
     //document.body.appendChild(stats.dom);
     
     
-    const axesHelper = new THREE.AxesHelper(50); // chiều dài trục là 5 đơn vị
-    scene.add(axesHelper);
+    // const axesHelper = new THREE.AxesHelper(50); // chiều dài trục là 5 đơn vị
+    // scene.add(axesHelper);
 
     const clock = new THREE.Clock();
 
@@ -261,12 +263,42 @@ const SolarSystem2 = async () =>
         var details = document.getElementById('planetDetails');
     
         name.innerText = planet;
-        details.innerText = `Radius: ${planetData[planet].radius}\nTilt: ${planetData[planet].tilt}\nRotation: ${planetData[planet].rotation}\nOrbit: ${planetData[planet].orbit}\nDistance: ${planetData[planet].distance}\nMoons: ${planetData[planet].moons}\nInfo: ${planetData[planet].info}`;
-    
+        
+        // Tạo HTML với layout mới
+        details.innerHTML = `
+            <div class="info-row">
+                <span class="info-label"><b>Radius</b></span>
+                <span class="info-value">${planetData[planet].radius}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label"><b>Tilt</b></span>
+                <span class="info-value">${planetData[planet].tilt}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label"><b>Rotation</b></span>
+                <span class="info-value">${planetData[planet].rotation}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label"><b>Orbit</b></span>
+                <span class="info-value">${planetData[planet].orbit}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label"><b>Distance</b></span>
+                <span class="info-value">${planetData[planet].distance}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label"><b>Moons</b></span>
+                <span class="info-value">${planetData[planet].moons}</span>
+            </div>
+            <div class="planet-description">
+                <p>${planetData[planet].info}</p>
+            </div>
+        `;
+        //details.innerText = `Radius: ${planetData[planet].radius}\nTilt: ${planetData[planet].tilt}\nRotation: ${planetData[planet].rotation}\nOrbit: ${planetData[planet].orbit}\nDistance: ${planetData[planet].distance}\nMoons: ${planetData[planet].moons}\nInfo: ${planetData[planet].info}`;
         info.style.display = 'block';
     }
     let isZoomingOut = false;
-    let zoomOutTargetPosition = new THREE.Vector3(-200, 70, 10);
+    let zoomOutTargetPosition = new THREE.Vector3(-75, 20, 5);
     // close 'x' button function
     function closeInfo() {
         var info = document.getElementById('planetInfo');
@@ -287,16 +319,16 @@ const SolarSystem2 = async () =>
     const identifyPlanet = (clickedObject) => {
         // Logic to identify which planet was clicked based on the clicked object, different offset for camera distance
         if (clickedObject === mercury.planet || clickedObject === mercury.Atmosphere) {
-            offset = 10;
+            offset = 7;
             return mercury;
         } else if (clickedObject === venus.planet || clickedObject === venus.Atmosphere) {
-            offset = 25;
+            offset = 15;
             return venus;
         } else if (clickedObject === earth.planet || clickedObject === earth.Atmosphere) {
-            offset = 25;
+            offset = 17;
             return earth;
         } else if (clickedObject === mars.planet || clickedObject === mars.Atmosphere) {
-            offset = 15;
+            offset = 7;
             return mars;
         } else if (clickedObject === jupiter.planet || clickedObject === jupiter.Atmosphere) {
             offset = 50;
@@ -305,10 +337,10 @@ const SolarSystem2 = async () =>
             offset = 50;
             return saturn;
         } else if (clickedObject === uranus.planet || clickedObject === uranus.Atmosphere) {
-            offset = 25;
+            offset = 15;
             return uranus;
         } else if (clickedObject === neptune.planet || clickedObject === neptune.Atmosphere) {
-            offset = 20;
+            offset = 15;
             return neptune;
         }
         return null;
@@ -492,6 +524,9 @@ const SolarSystem2 = async () =>
     neptune.planet.receiveShadow = true;
     //pluto.planet.receiveShadow = true;
 
+    // Add meteor shower
+    const meteorShower = new MeteorShower(scene);
+
     function SunAnimation()
     {
         sun.rotateY(0.001 * settings.acceleration);
@@ -645,6 +680,9 @@ const SolarSystem2 = async () =>
     {
         const deltaTime = clock.getDelta();
         
+        // Update meteor shower
+        meteorShower.update(deltaTime);
+        
         SunAnimation();
         MercuryAnimation(deltaTime);
         VenusAnimation(deltaTime);
@@ -666,19 +704,20 @@ const SolarSystem2 = async () =>
             selectedPlanet.planet.getWorldPosition(planetPosition);
             controls.target.copy(planetPosition);
             targetCameraPosition.copy(planetPosition).add(camera.position.clone().sub(planetPosition).normalize().multiplyScalar(offset));
-            camera.position.lerp(targetCameraPosition, 0.03);
+            camera.position.lerp(targetCameraPosition, 0.05);
         }
 
         // ******  ZOOM IN/OUT  ******
         if (isMovingTowardsPlanet) {
-            camera.position.lerp(targetCameraPosition, 0.03);
-            if (camera.position.distanceTo(targetCameraPosition) < 1) {
+            camera.position.lerp(targetCameraPosition, 0.07);
+            if (camera.position.distanceTo(targetCameraPosition) < 0.5) {
                 isMovingTowardsPlanet = false;
                 showPlanetInfo(selectedPlanet.name);
             }
         } else if (isZoomingOut) {
-            camera.position.lerp(zoomOutTargetPosition, 0.05);
-            if (camera.position.distanceTo(zoomOutTargetPosition) < 1) {
+            camera.position.lerp(zoomOutTargetPosition, 0.07);
+            
+            if (camera.position.distanceTo(zoomOutTargetPosition) < 0.5) {
                 isZoomingOut = false;
             }
         }
