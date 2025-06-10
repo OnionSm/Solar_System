@@ -3,7 +3,7 @@ import SolarSystem2 from "./assets/scripts/systems/solarSystem2";
 
 function LoadComponent() {
     //SolarSystem();
-    SolarSystem2();
+    SolarSystem();
 }
 
 
