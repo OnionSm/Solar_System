@@ -166,6 +166,7 @@ const SolarSystem2 = async() => {
         uranus.orbitMaterial.opacity = ev.value;
         neptune.orbitMaterial.opacity = ev.value;
         harley.orbitMaterial.opacity = ev.value;
+        parkerSolarProbe.orbitMaterial.opacity = ev.value;
     });
     // Thêm từng orbit color vào folder, dùng kiểu màu
     orbitColorFolder.addBinding(settings, 'mercury_orbit_color', { view: 'color' }).on('change', (ev) => {
@@ -1001,7 +1002,6 @@ const SolarSystem2 = async() => {
         renderer.setSize(window.innerWidth, window.innerHeight);
         composer.setSize(window.innerWidth, window.innerHeight);
     });
-
 }
 
-export default SolarSystem2;
+export default SolarSystem2

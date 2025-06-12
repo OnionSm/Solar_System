@@ -339,7 +339,7 @@ const SolarSystem = () => {
         // Di chuyển mượt camera đến vị trí đích
         camera.position.lerp(cameraTargetPosition, 0.01);
 
-        console.log(camera.position);
+
         if (planetObjects.Sun && planetObjects.Sun.planet) {
             planetObjects.Sun.planet.rotateY(0.001 * settings.acceleration);
         }
@@ -356,7 +356,14 @@ const SolarSystem = () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
         composer.setSize(window.innerWidth, window.innerHeight);
     });
+    return {
+        cleanup: () => {
+            // Dọn dẹp event listeners, animation loops, v.v.
+            renderer.dispose();
+            controls.dispose();
+        }
+    };
 
 };
 
-export default SolarSystem;
+export default SolarSystem

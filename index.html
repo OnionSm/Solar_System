@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,11 +26,11 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
-
+        
         .planet-info-content {
             position: relative;
         }
-
+        
         .close-btn {
             position: absolute;
             top: 2px;
@@ -47,12 +48,12 @@
             font-size: 16px;
             /*transition: all 0.3s ease;*/
         }
-
+        
         .close-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
         }
-
+        
         #planetName {
             font-size: 24px;
             font-weight: bold;
@@ -64,13 +65,13 @@
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         #planetDetails {
             font-size: 14px;
             line-height: 1.6;
             color: #e0e0e0;
         }
-
+        
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -78,23 +79,23 @@
             padding: 5px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
+        
         .info-label {
             color: #888;
             font-weight: 500;
         }
-
+        
         .info-value {
             color: #fff;
             font-weight: 400;
         }
-
+        
         .planet-description {
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         .planet-description p {
             font-size: 13px;
             line-height: 1.5;
@@ -111,16 +112,18 @@
         }
     </style> -->
 </head>
-<body>
-    <!-- <div id="gui-container"></div> -->
-    <div id="gui-container"></div>
-    
-    </div>
-   
-     
- 
 
-    <div><script type="module" src="./main.js"></script></div>
+<body>
+    <div id="gui-container"></div>
+
+    </div>
+
+
+
+
+    <div>
+        <script type="module" src="./main.js"></script>
+    </div>
     <div id="planetInfo" class="planet-info">
         <div class="planet-info-content">
             <span class="close-btn" onclick="closeInfo()">&times;</span>
@@ -128,6 +131,7 @@
             <p id="planetDetails"></p>
         </div>
     </div>
-   
+
 </body>
+
 </html>

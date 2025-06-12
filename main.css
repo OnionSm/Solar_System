@@ -97,18 +97,21 @@
 }
 
 h2 {
-    color: lightyellow; 
+    color: lightyellow;
 }
 
 p {
-    color: white; 
-    line-height: 1.5; 
+    color: white;
+    line-height: 1.5;
 }
-html, body {
+
+html,
+body {
     height: 100%;
     width: 100%;
     background-color: black;
-  }
+}
+
 #slider-container {
     position: absolute;
     top: 20px;
@@ -118,12 +121,45 @@ html, body {
     width: 200px;
     height: 200px;
     background-color: rgb(88, 77, 77);
-
 }
 
 #gui-container {
-    position: absolute; /* or fixed if you want it to stay on screen */
+    position: absolute;
+    /* or fixed if you want it to stay on screen */
     top: 10px;
     right: 10px;
     z-index: 10;
-  }
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#switchBtn {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    padding: 12px 28px;
+    font-size: 18px;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+#solar-system-canvas {
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
